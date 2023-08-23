@@ -10,7 +10,7 @@ suspend fun Client.createMss(): Unit =
         val response = sendAndReceive(
             "mss/create", """
                 {
-                    "name": "Bolt"
+                    "name": "Artist name"
                 }
             """.trimIndent()
         )
