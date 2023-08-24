@@ -1,0 +1,420 @@
+openapi: 3.0.4
+info:
+  title: "MusicSearchService"
+  description: This is a place where everyone can find out the name of the song they like or its author
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/v1
+tags:
+  - name: topic
+    description: Тема, создаваемая пользователем, для получения информации о названии песни или ее авторе
+paths:
+  /topic/create:
+    post:
+      tags:
+        - topic
+      summary: Create topic
+      operationId: topicCreate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopicCreateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicCreateResponse'
+  /topic/read:
+    post:
+      tags:
+        - topic
+      summary: Read topic
+      operationId: topicRead
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopicReadRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicReadResponse'
+  /topic/update:
+    post:
+      tags:
+        - topic
+      summary: Update topic
+      operationId: topicUpdate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopicUpdateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicUpdateResponse'
+  /topic/delete:
+    post:
+      tags:
+        - topic
+      summary: Delete topic
+      operationId: topicDelete
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopicDeleteRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicDeleteResponse'
+  /topic/search:
+    post:
+      tags:
+        - topic
+      summary: Search topic
+      operationId: topicSearch
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopicSearchRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicSearchResponse'
+
+components:
+  schemas:
+    IRequest:
+      type: object
+      description: Базовый интерфейс для всех запросов
+      properties:
+        requestType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+      discriminator:
+        propertyName: requestType
+        mapping:
+          create: '#/components/schemas/TopicCreateRequest'
+          read: '#/components/schemas/TopicReadRequest'
+          update: '#/components/schemas/TopicUpdateRequest'
+          delete: '#/components/schemas/TopicDeleteRequest'
+          search: '#/components/schemas/TopicSearchRequest'
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        group:
+          type: string
+        field:
+          type: string
+        message:
+          type: string
+
+    ResponseResult:
+      type: string
+      enum:
+        - success
+        - error
+
+    IResponse:
+      type: object
+      description: Базовый интерфейс для всех ответов
+      properties:
+        responseType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+        result:
+          $ref: '#/components/schemas/ResponseResult'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+
+      discriminator:
+        propertyName: responseType
+        mapping:
+          create: '#/components/schemas/TopicCreateResponse'
+          read: '#/components/schemas/TopicReadResponse'
+          update: '#/components/schemas/TopicUpdateResponse'
+          delete: '#/components/schemas/TopicDeleteResponse'
+          search: '#/components/schemas/TopicSearchResponse'
+          init: '#/components/schemas/TopicInitResponse'
+
+    UserId:
+      type: string
+      description: Идентификатор пользователя
+    TopicId:
+      type: string
+      description: Идентификатор темы
+    TopicLock:
+      type: string
+      description: Версия оптимистичной блокировки
+
+    BaseTopic:
+      type: object
+      description: Объект описывает свойства, одинаковые для create и update
+      properties:
+        title:
+          type: string
+          description: Заголовок темы
+        description:
+          type: string
+          description: Описание темы
+        songExcerpt:
+          type: string
+          format: binary
+        topicType:
+          $ref: '#/components/schemas/TopicSide'
+        status:
+          $ref: '#/components/schemas/TopicStatus'
+        answer:
+          type: string
+          description: ответ пользователя
+
+    TopicSide:
+      type: string
+      description: 'Сторона в теме: спрашивающий или отвечающий'
+      enum:
+        - questioner
+        - respondent
+
+    TopicStatus:
+      type: string
+      description: 'Статус темы. Возможные значения: открытая или закрытая'
+      enum:
+        - opened
+        - closed
+
+    TopicInitResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+
+    TopicCreateObject:
+      allOf:
+        - $ref: '#/components/schemas/BaseTopic'
+
+    TopicCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/TopicRequestDebug'
+        - type: object
+          properties:
+            topic:
+              $ref: '#/components/schemas/TopicCreateObject'
+
+    TopicReadObject:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/TopicId'
+
+    TopicReadRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/TopicRequestDebug'
+        - type: object
+          properties:
+            topic:
+              $ref: '#/components/schemas/TopicReadObject'
+
+    TopicUpdateObject:
+      allOf:
+        - $ref: '#/components/schemas/BaseTopic'
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/TopicId'
+            lock:
+              $ref: '#/components/schemas/TopicLock'
+
+    TopicUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/TopicRequestDebug'
+        - type: object
+          properties:
+            topic:
+              $ref: '#/components/schemas/TopicUpdateObject'
+
+    TopicDeleteObject:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/TopicId'
+            lock:
+              $ref: '#/components/schemas/TopicLock'
+
+    TopicDeleteRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/TopicRequestDebug'
+        - type: object
+          properties:
+            topic:
+              $ref: '#/components/schemas/TopicDeleteObject'
+
+    TopicSearchFilter:
+      type: object
+      description: Набор фильтров для поиска
+      properties:
+        searchString:
+          type: string
+          description: Поисковая строка, которая будет искаться в темах
+
+    TopicSearchRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/TopicRequestDebug'
+        - type: object
+          properties:
+            topicFilter:
+              $ref: '#/components/schemas/TopicSearchFilter'
+
+    TopicResponseObject:
+      allOf:
+        - $ref: '#/components/schemas/BaseTopic'
+        - type: object
+          description: Объект, который возвращается в ответе бэкенда
+          properties:
+            id:
+              $ref: '#/components/schemas/TopicId'
+            ownerId:
+              $ref: '#/components/schemas/UserId'
+            lock:
+              $ref: '#/components/schemas/TopicLock'
+            permissions:
+              type: array
+              uniqueItems: true
+              items:
+                $ref: '#/components/schemas/TopicPermissions'
+
+    TopicPermissions:
+      type: string
+      description: Доступы для пользователя для операций над темой
+      enum:
+        - read
+        - update
+        - delete
+        - makeStatusOpened
+        - makeStatusClosed
+
+    TopicResponseSingle:
+      allOf:
+        - type: object
+          description: Ответ с одним объектом темы
+          properties:
+            topic:
+              $ref: '#/components/schemas/TopicResponseObject'
+
+    TopicResponseMulti:
+      allOf:
+        - type: object
+          description: Список найденных объектов
+          properties:
+            topics:
+              type: array
+              items:
+                $ref: '#/components/schemas/TopicResponseObject'
+
+    TopicCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/TopicResponseSingle'
+
+    TopicReadResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/TopicResponseSingle'
+
+    TopicUpdateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/TopicResponseSingle'
+
+    TopicDeleteResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/TopicResponseSingle'
+
+    TopicSearchResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/TopicResponseMulti'
+
+    # STUBS ======================
+    TopicRequestDebugMode:
+      type: string
+      enum:
+        - prod
+        - test
+        - stub
+
+    TopicRequestDebug:
+      type: object
+      properties:
+        debug:
+          $ref: '#/components/schemas/TopicDebug'
+
+    TopicDebug:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/TopicRequestDebugMode'
+        stub:
+          $ref: '#/components/schemas/TopicRequestDebugStubs'
+
+    TopicRequestDebugStubs:
+      type: string
+      description: Перечисления всех стабов
+      enum:
+        - success
+        - notFound
+        - badId
+        - badTitle
+        - badDescription
+        - badStatus
+        - cannotDelete
+        - badSearchString

@@ -1,1 +1,1 @@
-package ru.otus.otuskotlin.musicsearchservice.m1l1
+package ru.mss.m1l1

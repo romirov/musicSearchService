@@ -1,10 +1,10 @@
-# 202306-ok-marketplace
+# 202306-mss
 
 Учебный проект курса
 [Kotlin Backend Developer](https://otus.ru/lessons/kotlin/?int_source=courses_catalog&int_term=programming).
 Поток курса 2023-06.
 
-Marketplace -- это площадка, на которой пользователи выставляют предложения и потребности. Задача
+MusicSearchService -- это площадка, на которой пользователи выставляют предложения и потребности. Задача
 площадки -- предоставить наиболее подходящие варианты в обоих случаях: для предложения -- набор вариантов с
 потребностями, для потребностей -- набор вариантов с предложениями.
 
@@ -44,19 +44,15 @@ Marketplace -- это площадка, на которой пользовате
 
 [//]: # (1. [specs]&#40;specs&#41; - описание API в форме OpenAPI-спецификаций)
 
-[//]: # (2. [ok-marketplace-api-v1-jackson]&#40;ok-marketplace-api-v1-jackson&#41; - Генерация первой версии транспортных модеелй с)
+[//]: # (2. [api-v1-jackson]&#40;api-v1-jackson&#41; - Генерация первой версии транспортных модеелй с)
 
 [//]: # (   Jackson)
 
-[//]: # (3. [ok-marketplace-api-v2-kmp]&#40;ok-marketplace-api-v2-kmp&#41; - Генерация второй версии транспортных модеелй с KMP)
-
-[//]: # (4. [ok-marketplace-common]&#40;ok-marketplace-common&#41; - модуль с общими классами для модулей проекта. В частности, там)
+[//]: # (4. [common]&#40;common&#41; - модуль с общими классами для модулей проекта. В частности, там)
 
 [//]: # (   располагаются внутренние модели и контекст.)
 
-[//]: # (5. [ok-marketplace-mappers-v1]&#40;ok-marketplace-mappers-v1&#41; - Мапер между внутренними моделями и моделями API v1)
-
-[//]: # (6. [ok-marketplace-mappers-v2]&#40;ok-marketplace-mappers-v2&#41; - Мапер между внутренними моделями и моделями API v1)
+[//]: # (5. [mappers-v1]&#40;mappers-v1&#41; - Мапер между внутренними моделями и моделями API v1)
 
 [//]: # ()
 
@@ -64,15 +60,9 @@ Marketplace -- это площадка, на которой пользовате
 
 [//]: # ()
 
-[//]: # (1. [ok-marketplace-app-spring]&#40;ok-marketplace-app-spring&#41; - Приложение на Spring Framework)
+[//]: # (1. [app-ktor]&#40;app-ktor&#41; - Приложение на Ktor JVM/Native)
 
-[//]: # (1. [ok-marketplace-app-ktor]&#40;ok-marketplace-app-ktor&#41; - Приложение на Ktor JVM/Native)
-
-[//]: # (1. [ok-marketplace-app-knative]&#40;ok-marketplace-app-serverless&#41; - Приложение для Yandex.Cloud lambda)
-
-[//]: # (1. [ok-marketplace-app-rabbit]&#40;ok-marketplace-app-rabbit&#41; - Микросервис на RabbitMQ)
-
-[//]: # (1. [ok-marketplace-app-kafka]&#40;ok-marketplace-app-kafka&#41; - Микросервис на Kafka)
+[//]: # (1. [app-rabbit]&#40;app-rabbit&#41; - Микросервис на RabbitMQ)
 
 [//]: # ()
 
@@ -80,9 +70,9 @@ Marketplace -- это площадка, на которой пользовате
 
 [//]: # ()
 
-[//]: # (1. [ok-marketplace-stubs]&#40;ok-marketplace-stubs&#41; - Стабы для ответов сервиса)
+[//]: # (1. [stubs]&#40;stubs&#41; - Стабы для ответов сервиса)
 
-[//]: # (1. [ok-marketplace-biz]&#40;ok-marketplace-biz&#41; - Модуль бизнес-логики приложения)
+[//]: # (1. [biz]&#40;biz&#41; - Модуль бизнес-логики приложения)
 
 [//]: # ()
 
@@ -90,27 +80,21 @@ Marketplace -- это площадка, на которой пользовате
 
 [//]: # ()
 
-[//]: # (1. [ok-marketplace-repo-tests]&#40;ok-marketplace-repo-tests&#41; - Базовые тесты для репозиториев всех баз данных)
+[//]: # (1. [repo-tests]&#40;repo-tests&#41; - Базовые тесты для репозиториев всех баз данных)
 
-[//]: # (2. [ok-marketplace-repo-inmemory]&#40;ok-marketplace-repo-inmemory&#41; - Репозиторий на базе кэша в памяти для тестирования)
+[//]: # (2. [repo-inmemory]&#40;repo-inmemory&#41; - Репозиторий на базе кэша в памяти для тестирования)
 
-[//]: # (3. [ok-marketplace-repo-postgresql]&#40;ok-marketplace-repo-postgresql&#41; - Репозиторий на базе PostgreSQL)
-
-[//]: # (4. [ok-marketplace-repo-cassandra]&#40;ok-marketplace-repo-cassandra&#41; - Репозиторий на базе Cassandra)
-
-[//]: # (5. [ok-marketplace-repo-gremlin]&#40;ok-marketplace-repo-gremlin&#41; - Репозиторий на базе Apache TinkerPop Gremlin и ArcadeDb)
+[//]: # (3. [repo-postgresql]&#40;repo-postgresql&#41; - Репозиторий на базе PostgreSQL)
 
 [//]: # (### Функции &#40;эндпониты&#41;)
 
 [//]: # ()
 
-[//]: # (1. CRUDS &#40;create, read, update, delete, search&#41; для объявлений &#40;ad&#41;)
-
-[//]: # (1. ad.offers &#40;опционально&#41;)
+[//]: # (1. CRUDS &#40;create, read, update, delete, search&#41; для тем &#40;topic&#41;)
 
 [//]: # ()
 
-[//]: # (### Описание сущности ad)
+[//]: # (### Описание сущности topic)
 
 [//]: # ()
 
@@ -122,10 +106,10 @@ Marketplace -- это площадка, на которой пользовате
 
 [//]: # (    3. Owner)
 
-[//]: # (    4. Visibility)
+[//]: # (    4. Status)
 
-[//]: # (2. DealSide: Demand/Proposal)
+[//]: # (2. TopicSide: Questioner/Respondent)
 
-[//]: # (3. ProductType &#40;гаечный ключ, ...&#41;)
+[//]: # (3. TopicType &#40;country music, ...&#41;)
 
-[//]: # (4. ProductId - идентификатор модели товара)
+[//]: # (4. TopicId - идентификатор топика)
