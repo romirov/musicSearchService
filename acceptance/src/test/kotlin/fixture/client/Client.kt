@@ -7,7 +7,7 @@ package ru.mss.blackbox.fixture.client
 interface Client {
     /**
      * @param version версия АПИ (v1)
-     * @param path путь к ресурсу, имя топика и т.п. (mss/create)
+     * @param path путь к ресурсу, имя топика и т.п. (topic/create)
      * @param request тело сообщения в виде строки
      * @return тело ответа
      */

@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "url": "/v1/mss/create"
+    "url": "/v1/topic/create"
   },
   "response": {
     "status": 200,

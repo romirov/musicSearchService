@@ -5,10 +5,10 @@ import io.kotest.matchers.should
 import ru.mss.blackbox.fixture.client.Client
 
 
-suspend fun Client.createMss(): Unit =
-    withClue("createMss") {
+suspend fun Client.createTopic(): Unit =
+    withClue("createTopic") {
         val response = sendAndReceive(
-            "mss/create", """
+            "topic/create", """
                 {
                     "name": "Artist name"
                 }
