@@ -11,7 +11,6 @@ class ResponseSerializationTest {
         topic = TopicResponseObject(
             title = "topic title",
             description = "topic description",
-            topicType = TopicSide.QUESTIONER,
             status = TopicStatus.OPENED,
         )
     )

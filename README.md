@@ -108,8 +108,8 @@ MusicSearchService -- это площадка, на которой пользо�
 
 [//]: # (    4. Status)
 
-[//]: # (2. TopicSide: Questioner/Respondent)
+[//]: # (    5. Song Excerpt)
 
-[//]: # (3. TopicType &#40;country music, ...&#41;)
+[//]: # (    6. Answers)
 
-[//]: # (4. TopicId - идентификатор топика)
+[//]: # (2. TopicId - идентификатор топика)

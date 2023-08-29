@@ -11,6 +11,6 @@
     2. Description
     3. Owner
     4. Status
-2. TopicSide: Questioner/Respondent
-3. TopicType (country music, rock music, indie music...)
-4. TopicId - идентификатор топика
+    5. Song Excerpt
+    6. Answers
+2. TopicId - идентификатор топика

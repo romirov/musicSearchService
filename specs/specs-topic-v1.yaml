@@ -204,20 +204,12 @@ components:
         songExcerpt:
           type: string
           format: binary
-        topicType:
-          $ref: '#/components/schemas/TopicSide'
         status:
           $ref: '#/components/schemas/TopicStatus'
-        answer:
-          type: string
-          description: ответ пользователя
-
-    TopicSide:
-      type: string
-      description: 'Сторона в теме: спрашивающий или отвечающий'
-      enum:
-        - questioner
-        - respondent
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
 
     TopicStatus:
       type: string
@@ -225,6 +217,16 @@ components:
       enum:
         - opened
         - closed
+
+    Answer:
+      type: object
+      description: Ответ пользователя
+      properties:
+        userId:
+          $ref: '#/components/schemas/UserId'
+        answerBody:
+          type: string
+          description: тело ответа
 
     TopicInitResponse:
       allOf:

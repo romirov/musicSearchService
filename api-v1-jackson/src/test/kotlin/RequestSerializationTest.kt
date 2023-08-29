@@ -15,7 +15,6 @@ class RequestSerializationTest {
         topic = TopicCreateObject(
             title = "topic title",
             description = "topic description",
-            topicType = TopicSide.QUESTIONER,
             status = TopicStatus.OPENED,
         )
     )
