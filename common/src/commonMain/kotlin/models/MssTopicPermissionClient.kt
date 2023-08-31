@@ -4,5 +4,6 @@ enum class MssTopicPermissionClient {
     READ,
     UPDATE,
     DELETE,
+    MAKE_OPENED,
     MAKE_CLOSED,
 }

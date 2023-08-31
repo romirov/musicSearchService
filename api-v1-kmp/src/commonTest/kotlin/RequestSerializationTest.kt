@@ -1,12 +1,15 @@
 package ru.mss.api.v1
 
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import ru.mss.api.v1.models.*
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 class RequestSerializationTest {
-    private val request = TopicCreateRequest(
+    private val request: IRequest = TopicCreateRequest(
+        requestType = "create",
         requestId = "123",
         debug = TopicDebug(
             mode = TopicRequestDebugMode.STUB,
@@ -21,7 +24,11 @@ class RequestSerializationTest {
 
     @Test
     fun serialize() {
-        val json = apiV1Mapper.writeValueAsString(request)
+//        val json = apiV2Mapper.encodeToString(AdRequestSerializer1, request)
+//        val json = apiV2Mapper.encodeToString(RequestSerializers.create, request)
+        val json = apiV1Mapper.encodeToString(request)
+
+        println(json)
 
         assertContains(json, Regex("\"title\":\\s*\"topic title\""))
         assertContains(json, Regex("\"mode\":\\s*\"stub\""))
@@ -31,18 +38,20 @@ class RequestSerializationTest {
 
     @Test
     fun deserialize() {
-        val json = apiV1Mapper.writeValueAsString(request)
-        val obj = apiV1Mapper.readValue(json, IRequest::class.java) as TopicCreateRequest
+        val json = apiV1Mapper.encodeToString(request)
+//        val json = apiV1Mapper.encodeToString(TopicRequestSerializer1, request)
+//        val json = apiV1Mapper.encodeToString(RequestSerializers.create, request)
+//        val obj = apiV1Mapper.decodeFromString(TopicRequestSerializer, json) as TopicCreateRequest
+        val obj = apiV1Mapper.decodeFromString(json) as TopicCreateRequest
 
         assertEquals(request, obj)
     }
-
     @Test
     fun deserializeNaked() {
         val jsonString = """
             {"requestId": "123"}
         """.trimIndent()
-        val obj = apiV1Mapper.readValue(jsonString, TopicCreateRequest::class.java)
+        val obj = apiV1Mapper.decodeFromString<TopicCreateRequest>(jsonString)
 
         assertEquals("123", obj.requestId)
     }

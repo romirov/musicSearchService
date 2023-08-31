@@ -184,6 +184,9 @@ components:
     UserId:
       type: string
       description: Идентификатор пользователя
+    AnswerId:
+      type: string
+      description: Идентификатор ответа
     TopicId:
       type: string
       description: Идентификатор темы
@@ -201,15 +204,10 @@ components:
         description:
           type: string
           description: Описание темы
-        songExcerpt:
-          type: string
-          format: binary
         status:
           $ref: '#/components/schemas/TopicStatus'
-        answers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Answer'
+        answer:
+          $ref: '#/components/schemas/Answer'
 
     TopicStatus:
       type: string
@@ -222,6 +220,8 @@ components:
       type: object
       description: Ответ пользователя
       properties:
+        id:
+          $ref: '#/components/schemas/AnswerId'
         userId:
           $ref: '#/components/schemas/UserId'
         answerBody:
@@ -332,6 +332,11 @@ components:
               uniqueItems: true
               items:
                 $ref: '#/components/schemas/TopicPermissions'
+            answers:
+              type: array
+              items:
+                $ref: '#/components/schemas/Answer'
+
 
     TopicPermissions:
       type: string
@@ -340,8 +345,8 @@ components:
         - read
         - update
         - delete
-        - makeStatusOpened
-        - makeStatusClosed
+        - makeOpened
+        - makeClosed
 
     TopicResponseSingle:
       allOf:

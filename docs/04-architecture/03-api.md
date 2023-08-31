@@ -11,6 +11,5 @@
     2. Description
     3. Owner
     4. Status
-    5. Song Excerpt
-    6. Answers
+    5. Answers
 2. TopicId - идентификатор топика
