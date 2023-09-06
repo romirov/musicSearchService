@@ -46,7 +46,7 @@ kotlin {
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         binaries {
             executable {
-                entryPoint = "ru.mss.app.main"
+                entryPoint = "ru.mss.app.ktor.main"
             }
         }
     }
