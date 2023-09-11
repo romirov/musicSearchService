@@ -1,3 +1,3 @@
 # Схема интеграции
 
-![Схема интеграции](./integration.drawio.svg)
+![Схема интеграции](../imgs/integration.drawio.svg)

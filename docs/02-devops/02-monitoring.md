@@ -1,3 +1,3 @@
 # Схема инфраструктуры мониторинга
 
-![Monitoring](../../imgs/infrastructure-Monitoring.drawio.png)
+![Monitoring](../imgs/infrastructure-Monitoring.drawio.png)

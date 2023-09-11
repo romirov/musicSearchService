@@ -1,3 +1,3 @@
 # Архитектурная диаграмма
 
-![Комопнентная архитектура](./architecture.drawio.svg)
+![Комопнентная архитектура](../imgs/architecture.drawio.svg)
