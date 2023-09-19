@@ -17,15 +17,14 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.slf4j.event.Level
 import ru.mss.api.v1.apiV1Mapper
+import ru.mss.app.ktor.plugins.initAppSettings
 import ru.mss.app.ktor.v2.v1Topic
 import ru.mss.biz.MssTopicProcessor
 
 //запуск через gradle
 //создание образа через gradle - app-ktor - ktor - runDocker
 @Suppress("unused")
-fun Application.module(){
-    val processor = MssTopicProcessor()
-
+fun Application.module(appSettings: MssAppSettings = initAppSettings()){
     install(CachingHeaders)
     install(DefaultHeaders)
     install(AutoHeadResponse)
@@ -45,9 +44,6 @@ fun Application.module(){
         level = Level.INFO
     }
 
-    @Suppress("OPT_IN_USAGE")
-    install(Locations)
-
     routing {
         get("/") {
             call.respondText("Hello, world!")
@@ -57,7 +53,7 @@ fun Application.module(){
                 json(apiV1Mapper)
             }
 
-            v1Topic(processor)
+            v1Topic(appSettings)
         }
 
         static("static") {

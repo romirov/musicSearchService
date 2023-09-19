@@ -49,13 +49,14 @@ val apiV1Mapper = Json {
     }
 }
 
-fun Json.encodeResponse(response: IResponse): String = encodeToString(TopicResponseSerializer, response)
+//fun Json.encodeResponse(response: IResponse): String = encodeToString(TopicResponseSerializer, response)
 
-fun apiV1ResponseSerialize(Response: IResponse): String = apiV1Mapper.encodeToString(TopicResponseSerializer, Response)
+fun apiV1ResponseSerialize(response: IResponse): String = apiV1Mapper.encodeToString(TopicResponseSerializer, response)
 
-@Suppress("UNCHECKED_CAST")
-fun <T : Any> apiV1ResponseDeserialize(json: String): T = apiV1Mapper.decodeFromString(TopicResponseSerializer, json) as T
+@Suppress("UNCHECKED_CAST", "unused")
+fun <T : IResponse> apiV1ResponseDeserialize(json: String): T = apiV1Mapper.decodeFromString(TopicResponseSerializer, json) as T
 
+@Suppress("unused")
 fun apiV1RequestSerialize(request: IRequest): String = apiV1Mapper.encodeToString(TopicRequestSerializer, request)
 
 @Suppress("UNCHECKED_CAST")

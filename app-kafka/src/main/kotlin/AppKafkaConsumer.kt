@@ -13,6 +13,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.errors.WakeupException
+import ru.mss.app.common.controllerHelper
 import ru.mss.biz.MssTopicProcessor
 import ru.mss.common.MssContext
 import java.time.Duration
@@ -31,7 +32,6 @@ interface ConsumerStrategy {
 class AppKafkaConsumer(
     private val config: AppKafkaConfig,
     consumerStrategies: List<ConsumerStrategy>,
-    private val processor: MssTopicProcessor = MssTopicProcessor(),
     private val consumer: Consumer<String, String> = config.createKafkaConsumer(),
     private val producer: Producer<String, String> = config.createKafkaProducer()
 ) {
@@ -53,17 +53,14 @@ class AppKafkaConsumer(
 
                 records.forEach { record: ConsumerRecord<String, String> ->
                     try {
-                        val ctx = MssContext(
-                            timeStart = Clock.System.now(),
-                        )
-                        log.info { "process ${record.key()} from ${record.topic()}:\n${record.value()}" }
                         val (_, outputTopic, strategy) = topicsAndStrategyByInputTopic[record.topic()]
                             ?: throw RuntimeException("Receive message from unknown topic ${record.topic()}")
 
-                        strategy.deserialize(record.value(), ctx)
-                        processor.exec(ctx)
-
-                        sendResponse(ctx, strategy, outputTopic)
+                        val resp = config.controllerHelper(
+                            { strategy.deserialize(record.value(), this) },
+                            { strategy.serialize(this) },
+                        )
+                        sendResponse(resp, outputTopic)
                     } catch (ex: Exception) {
                         log.error(ex) { "error" }
                     }
@@ -83,8 +80,7 @@ class AppKafkaConsumer(
         }
     }
 
-    private fun sendResponse(context: MssContext, strategy: ConsumerStrategy, outputTopic: String) {
-        val json = strategy.serialize(context)
+    private fun sendResponse(json: String, outputTopic: String) {
         val resRecord = ProducerRecord(
             outputTopic,
             UUID.randomUUID().toString(),

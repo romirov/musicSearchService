@@ -69,6 +69,7 @@ kotlin {
                 implementation(ktor("websockets")) // "io.ktor:ktor-websockets:$ktorVersion"
                 implementation(ktor("auth")) // "io.ktor:ktor-auth:$ktorVersion"
 
+                implementation(project(":app-common"))
                 implementation(project(":common"))
                 implementation(project(":biz"))
 

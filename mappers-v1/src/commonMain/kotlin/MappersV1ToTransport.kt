@@ -11,54 +11,56 @@ fun MssContext.toTransportTopic(): IResponse = when (val cmd = command) {
     MssCommand.UPDATE -> toTransportUpdate()
     MssCommand.DELETE -> toTransportDelete()
     MssCommand.SEARCH -> toTransportSearch()
+    MssCommand.INIT -> toTransportInit()
+    MssCommand.FINISH -> throw UnknownMssCommand(cmd)
     MssCommand.NONE -> throw UnknownMssCommand(cmd)
 }
 
 fun MssContext.toTransportCreate() = TopicCreateResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == MssState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
     topic = topicResponse.toTransportTopic()
 )
 
 fun MssContext.toTransportRead() = TopicReadResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == MssState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
     topic = topicResponse.toTransportTopic()
 )
 
 fun MssContext.toTransportUpdate() = TopicUpdateResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == MssState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
     topic = topicResponse.toTransportTopic()
 )
 
 fun MssContext.toTransportDelete() = TopicDeleteResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == MssState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
     topic = topicResponse.toTransportTopic()
 )
 
 fun MssContext.toTransportSearch() = TopicSearchResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == MssState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
     topics = topicsResponse.toTransportTopic()
 )
-
-fun List<MssTopic>.toTransportTopic(): List<TopicResponseObject>? = this
-    .map { it.toTransportTopic() }
-    .toList()
-    .takeIf { it.isNotEmpty() }
 
 fun MssContext.toTransportInit() = TopicInitResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
 )
+
+fun List<MssTopic>.toTransportTopic(): List<TopicResponseObject>? = this
+    .map { it.toTransportTopic() }
+    .toList()
+    .takeIf { it.isNotEmpty() }
 
 private fun MssTopic.toTransportTopic(): TopicResponseObject = TopicResponseObject(
     id = id.takeIf { it != MssTopicId.NONE }?.asString(),
@@ -111,3 +113,9 @@ private fun MssError.toTransportTopic() = Error(
     field = field.takeIf { it.isNotBlank() },
     message = message.takeIf { it.isNotBlank() },
 )
+
+private fun MssState.toResult(): ResponseResult? = when (this) {
+    MssState.RUNNING -> ResponseResult.SUCCESS
+    MssState.FAILING -> ResponseResult.ERROR
+    MssState.NONE -> null
+}

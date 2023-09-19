@@ -34,3 +34,5 @@ include("biz")
 include("app-ktor")
 
 include("app-kafka")
+
+include("app-common")

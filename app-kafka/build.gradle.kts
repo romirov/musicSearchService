@@ -39,6 +39,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingJvmVersion")
 
+    implementation(project(":app-common"))
     // transport models
     implementation(project(":common"))
     implementation(project(":api-v1-kmp"))
