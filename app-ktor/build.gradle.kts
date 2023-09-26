@@ -83,6 +83,11 @@ kotlin {
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
+
+                // logging
+                implementation(project(":api-log"))
+                implementation(project(":mappers-log"))
+                implementation(project(":lib-logging-common"))
             }
         }
 
