@@ -9,10 +9,15 @@ import ru.mss.app.common.controllerHelper
 import ru.mss.app.ktor.MssAppSettings
 import ru.mss.mappers.v1.fromTransport
 import ru.mss.mappers.v1.toTransportTopic
+import kotlin.reflect.KClass
 
 suspend inline fun <reified Q : IRequest, @Suppress("unused") reified R : IResponse> ApplicationCall.processV1(
     appSettings: MssAppSettings,
+    clazz: KClass<*>,
+    logId: String,
 ) = appSettings.controllerHelper(
-    { fromTransport(receive<Q>()) },
-    { respond(toTransportTopic()) }
+    { fromTransport(this@processV1.receive<Q>()) },
+    { this@processV1.respond(toTransportTopic()) },
+    clazz,
+    logId,
 )

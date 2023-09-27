@@ -17,6 +17,7 @@ fun MssContext.toTransportTopic(): IResponse = when (val cmd = command) {
 }
 
 fun MssContext.toTransportCreate() = TopicCreateResponse(
+    responseType = "create",
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = state.toResult(),
     errors = errors.toTransportErrors(),
@@ -24,6 +25,7 @@ fun MssContext.toTransportCreate() = TopicCreateResponse(
 )
 
 fun MssContext.toTransportRead() = TopicReadResponse(
+    responseType = "read",
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = state.toResult(),
     errors = errors.toTransportErrors(),
@@ -31,6 +33,7 @@ fun MssContext.toTransportRead() = TopicReadResponse(
 )
 
 fun MssContext.toTransportUpdate() = TopicUpdateResponse(
+    responseType = "update",
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = state.toResult(),
     errors = errors.toTransportErrors(),
@@ -38,6 +41,7 @@ fun MssContext.toTransportUpdate() = TopicUpdateResponse(
 )
 
 fun MssContext.toTransportDelete() = TopicDeleteResponse(
+    responseType = "delete",
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = state.toResult(),
     errors = errors.toTransportErrors(),
@@ -45,6 +49,7 @@ fun MssContext.toTransportDelete() = TopicDeleteResponse(
 )
 
 fun MssContext.toTransportSearch() = TopicSearchResponse(
+    responseType = "search",
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = state.toResult(),
     errors = errors.toTransportErrors(),
@@ -53,7 +58,7 @@ fun MssContext.toTransportSearch() = TopicSearchResponse(
 
 fun MssContext.toTransportInit() = TopicInitResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
 )
 

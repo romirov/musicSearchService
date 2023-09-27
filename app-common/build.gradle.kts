@@ -16,6 +16,10 @@ kotlin {
                 implementation(project(":api-v1-kmp"))
                 implementation(project(":mappers-v1"))
 
+                // logging
+                implementation(project(":api-log"))
+                implementation(project(":mappers-log"))
+
                 // Stubs
                 implementation(project(":stubs"))
 

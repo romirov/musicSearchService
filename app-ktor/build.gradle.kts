@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 import org.jetbrains.kotlin.util.suffixIfNot
 
 val ktorVersion: String by project
@@ -14,28 +12,33 @@ plugins {
     id("application")
     kotlin("plugin.serialization")
     kotlin("multiplatform")
-    id("io.ktor.plugin")
+//    id("io.ktor.plugin")
 }
 
-repositories {
-    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
+val webjars: Configuration by configurations.creating
+dependencies {
+    val swaggerUiVersion: String by project
+    webjars("org.webjars:swagger-ui:$swaggerUiVersion")
 }
+//repositories {
+//    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
+//}
 
 application {
     mainClass.set("io.ktor.server.cio.EngineMain")
 }
 
-ktor {
-    docker {
-        localImageName.set(project.name + "-ktor")
-        imageTag.set(project.version.toString())
-        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
-    }
-}
-
-jib {
-    container.mainClass = "io.ktor.server.cio.EngineMain"
-}
+//ktor {
+//    docker {
+//        localImageName.set(project.name + "-ktor")
+//        imageTag.set(project.version.toString())
+//        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
+//    }
+//}
+//
+//jib {
+//    container.mainClass = "io.ktor.server.cio.EngineMain"
+//}
 
 kotlin {
     jvm {
@@ -43,20 +46,18 @@ kotlin {
     }
 
 
-    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        binaries {
-            executable {
-                entryPoint = "ru.mss.app.ktor.main"
-            }
-        }
-    }
+//    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+//        binaries {
+//            executable {
+//                entryPoint = "ru.mss.app.ktor.main"
+//            }
+//        }
+//    }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
-                implementation(ktor("core")) // "io.ktor:ktor-server-core:$ktorVersion"
-
                 implementation(ktor("core")) // "io.ktor:ktor-server-core:$ktorVersion"
                 implementation(ktor("cio")) // "io.ktor:ktor-server-cio:$ktorVersion"
                 implementation(ktor("auth")) // "io.ktor:ktor-server-auth:$ktorVersion"
@@ -128,6 +129,9 @@ kotlin {
                 implementation(ktor("auth-jwt")) // "io.ktor:ktor-auth-jwt:$ktorVersion"
 
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
+                implementation(project(":lib-logging-logback"))
+                implementation("com.sndyuk:logback-more-appenders:1.8.8")
+                implementation("org.fluentd:fluent-logger:0.3.4")
             }
         }
 
