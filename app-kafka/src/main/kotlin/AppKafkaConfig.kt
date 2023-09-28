@@ -2,13 +2,15 @@ package ru.mss.app.kafka
 
 import ru.mss.app.common.IMssAppSettings
 import ru.mss.biz.MssTopicProcessor
+import ru.mss.common.MssCorSettings
 
 class AppKafkaConfig(
     val kafkaHosts: List<String> = KAFKA_HOSTS,
     val kafkaGroupId: String = KAFKA_GROUP_ID,
     val kafkaTopicInV1: String = KAFKA_TOPIC_IN_V1,
     val kafkaTopicOutV1: String = KAFKA_TOPIC_OUT_V1,
-    override val processor: MssTopicProcessor = MssTopicProcessor(),
+    override val corSettings: MssCorSettings = MssCorSettings(),
+    override val processor: MssTopicProcessor = MssTopicProcessor(corSettings),
 ) : IMssAppSettings {
     companion object {
         const val KAFKA_HOST_VAR = "KAFKA_HOSTS"

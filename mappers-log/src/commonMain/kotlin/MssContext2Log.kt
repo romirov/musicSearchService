@@ -1,6 +1,7 @@
 package ru.mss.mappers.log
 
 import kotlinx.datetime.Clock
+import ru.mss.api.logs.models.*
 import ru.mss.common.MssContext
 import ru.mss.common.models.*
 
@@ -8,26 +9,26 @@ fun MssContext.toLog(logId: String) = CommonLogModel(
     messageTime = Clock.System.now().toString(),
     logId = logId,
     source = "ok-musicsearchservice",
-    ad = toMkplLog(),
+    topic = toMkplLog(),
     errors = errors.map { it.toLog() },
 )
 
-fun MssContext.toMkplLog():MssLogModel? {
-    val adNone = MssTopic()
+fun MssContext.toMkplLog(): MssLogModel? {
+    val topicNone = MssTopic()
     return MssLogModel(
         requestId = requestId.takeIf { it != MssRequestId.NONE }?.asString(),
         operation = command.toLogModel(),
-        requestAd = topicRequest.takeIf { it != adNone }?.toLog(),
-        responseAd = topicResponse.takeIf { it != adNone }?.toLog(),
-        responseAds = topicsResponse.takeIf { it.isNotEmpty() }?.filter { it != adNone }?.map { it.toLog() },
+        requestTopic = topicRequest.takeIf { it != topicNone }?.toLog(),
+        responseTopic = topicResponse.takeIf { it != topicNone }?.toLog(),
+        responseTopics = topicsResponse.takeIf { it.isNotEmpty() }?.filter { it != topicNone }?.map { it.toLog() },
         requestFilter = topicFilterRequest.takeIf { it != MssTopicFilter() }?.toLog(),
     ).takeIf { it != MssLogModel() }
 }
 
-private fun MssCommand.toLogModel(): MssLogModel.Operation? = when(this) {
+private fun MssCommand.toLogModel(): MssLogModel.Operation? = when (this) {
     MssCommand.CREATE -> MssLogModel.Operation.CREATE
     MssCommand.READ -> MssLogModel.Operation.READ
-    MssCommand.UPDATE -> MkplLogModel.Operation.UPDATE
+    MssCommand.UPDATE -> MssLogModel.Operation.UPDATE
     MssCommand.DELETE -> MssLogModel.Operation.DELETE
     MssCommand.SEARCH -> MssLogModel.Operation.SEARCH
     MssCommand.INIT -> MssLogModel.Operation.INIT
@@ -37,7 +38,6 @@ private fun MssCommand.toLogModel(): MssLogModel.Operation? = when(this) {
 
 private fun MssTopicFilter.toLog() = TopicFilterLog(
     searchString = searchString.takeIf { it.isNotBlank() },
-    ownerId = ownerId.takeIf { it != MssUserId.NONE }?.asString(),
 )
 
 fun MssError.toLog() = ErrorLogModel(
@@ -53,6 +53,7 @@ fun MssTopic.toLog() = TopicLog(
     description = description.takeIf { it.isNotBlank() },
     ownerId = ownerId.takeIf { it != MssUserId.NONE }?.asString(),
     status = status.takeIf { it != MssTopicStatus.NONE }?.name,
-    answers = answers.takeIf { it.isNotEmpty() } ?: emptyList<MssTopicAnswer>(),
+    answers = answers.takeIf { it.isNotEmpty() }?.map { Answer(it.id.asString(), it.userId.asString(), it.answerBody) }
+        ?: emptyList(),
     permissions = permissionsClient.takeIf { it.isNotEmpty() }?.map { it.name }?.toSet(),
 )

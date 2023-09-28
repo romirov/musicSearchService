@@ -1,13 +1,8 @@
-package ru.mss.app.ktor.v2
+package ru.mss.app.ktor.v1
 
 import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
 import ru.mss.api.v1.models.*
 import ru.mss.app.ktor.MssAppSettings
-import ru.mss.biz.MssTopicProcessor
-import ru.mss.common.MssContext
-import ru.mss.mappers.v1.*
 import kotlin.reflect.KClass
 
 private val clCreate: KClass<*> = ApplicationCall::createTopic::class

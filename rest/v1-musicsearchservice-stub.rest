@@ -1,0 +1,155 @@
+### Create
+POST http://127.0.0.1:8080/v1/topic/create
+Content-Type: application/json
+
+{
+  "requestType": "create",
+  "requestId": "12345",
+  "topic": {
+    "title": "Неизвестная композиция",
+    "description": "Неизвестна композиция неизвестного автора",
+    "ownerId": "9435",
+    "status": "opened"
+  },
+  "debug": {
+    "mode": "stub",
+    "stub": "success"
+  }
+}
+
+### Get unexisted ID
+POST http://127.0.0.1:8080/v1/topic/read
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
+
+{
+  "requestType": "read",
+  "requestId": "12345",
+  "topic": {
+    "id": "99999"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+### Read With Existed id
+POST http://127.0.0.1:8080/v1/topic/read
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
+
+{
+  "requestType": "read",
+  "requestId": "12345",
+  "topic": {
+    "id": "existed"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Update
+POST http://localhost:8080/v1/topic/update
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
+
+{
+  "requestType": "update",
+  "requestId": "666",
+  "topic": {
+    "id": "updated",
+    "status": "closed"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Update with unexistedId
+POST http://localhost:8080/v1/topic/update
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
+
+{
+  "requestType": "update",
+  "requestId": "666",
+  "topic": {
+    "id": "668"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+### Delete existed
+POST http://localhost:8080/v1/topic/delete
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
+
+{
+  "requestType": "delete",
+  "requestId": "deleteId",
+  "topic": {
+    "id": "existed_id"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Delete non-existed
+POST http://localhost:8080/v1/topic/delete
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
+
+{
+  "requestType": "delete",
+  "requestId": "deleteId_unknown",
+  "topic": {
+    "id": "unknownId"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+### Search by string
+POST http://localhost:8080/v1/topic/search
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
+
+{
+  "requestType": "search",
+  "requestId": "search_1",
+  "topicFilter": {
+    "searchString": "Неизвестная композиция"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Search by string with error
+POST http://localhost:8080/v1/topic/search
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
+
+{
+  "requestType": "search",
+  "requestId": "search_1",
+  "topicFilter": {
+    "searchString": "кто тут"
+  },
+  "debug": {
+    "stub": "badSearchString"
+  }
+}

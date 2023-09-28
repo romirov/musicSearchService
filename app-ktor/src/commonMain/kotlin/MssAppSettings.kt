@@ -7,5 +7,5 @@ import ru.mss.common.MssCorSettings
 data class MssAppSettings(
     val appUrls: List<String> = emptyList(),
     override val corSettings: MssCorSettings,
-    override val processor: MssTopicProcessor = MssTopicProcessor(),
+    override val processor: MssTopicProcessor = MssTopicProcessor(corSettings),
 ): IMssAppSettings

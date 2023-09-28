@@ -1,4 +1,4 @@
-package ru.mss.app.ktor.v2
+package ru.mss.app.ktor.v1
 
 import io.ktor.server.application.*
 import io.ktor.server.request.*

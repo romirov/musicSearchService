@@ -10,6 +10,7 @@ import io.ktor.server.websocket.*
 import org.slf4j.event.Level
 import ru.mss.app.ktor.plugins.initAppSettings
 import ru.mss.app.ktor.plugins.swagger
+import ru.mss.lib.logging.logback.MssLogWrapperLogback
 
 private val clazz = Application::moduleJvm::class.qualifiedName ?: "Application"
 @Suppress("unused")

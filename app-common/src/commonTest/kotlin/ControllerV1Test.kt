@@ -3,6 +3,7 @@ package ru.mss.app.common
 import kotlinx.coroutines.test.runTest
 import ru.mss.api.v1.models.*
 import ru.mss.biz.MssTopicProcessor
+import ru.mss.common.MssCorSettings
 import ru.mss.mappers.v1.fromTransport
 import ru.mss.mappers.v1.toTransportTopic
 import kotlin.test.Test
@@ -22,7 +23,8 @@ class ControllerV1Test {
     )
 
     private val appSettings: IMssAppSettings = object : IMssAppSettings {
-        override val processor: MssTopicProcessor = MssTopicProcessor()
+        override val corSettings: MssCorSettings = MssCorSettings()
+        override val processor: MssTopicProcessor = MssTopicProcessor(corSettings)
     }
 
     class TestApplicationCall(private val request: IRequest) {
@@ -38,7 +40,9 @@ class ControllerV1Test {
     private suspend fun TestApplicationCall.createTopicKtor(appSettings: IMssAppSettings) {
         val resp = appSettings.controllerHelper(
             { fromTransport(receive<TopicCreateRequest>()) },
-            { toTransportTopic() }
+            { toTransportTopic() },
+            this::class,
+            "createTopicKtor",
         )
         respond(resp)
     }

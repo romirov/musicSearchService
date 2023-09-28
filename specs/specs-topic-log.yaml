@@ -1,0 +1,111 @@
+openapi: 3.0.4
+info:
+  title: MusicSearchService log models
+  description: Log models for logging services of MusicSearchService
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+paths: {}
+
+components:
+  schemas:
+    CommonLogModel:
+      title: Общая модель лога
+      description: Общая модель лога для всех микросервисов системы
+      type: object
+      properties:
+        messageTime:
+          type: string
+        logId:
+          type: string
+        source:
+          type: string
+        topic:
+          $ref: '#/components/schemas/MssLogModel'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorLogModel'
+
+    MssLogModel:
+      title: Модель лога для микросервиса MusicSearchService
+      type: object
+      properties:
+        requestId:
+          type: string
+        operation:
+          type: string
+          enum:
+            - create
+            - read
+            - update
+            - delete
+            - search
+            - init
+            - finish
+        requestTopic:
+          $ref: '#/components/schemas/TopicLog'
+        requestFilter:
+          $ref: '#/components/schemas/TopicFilterLog'
+        responseTopic:
+          $ref: '#/components/schemas/TopicLog'
+        responseTopics:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopicLog'
+
+    ErrorLogModel:
+      title: Модель лога для ошибки
+      type: object
+      properties:
+        message:
+          type: string
+        field:
+          type: string
+        code:
+          type: string
+        level:
+          type: string
+
+    TopicLog:
+      title: Модель лога для топика
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        ownerId:
+          type: string
+        status:
+          type: string
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+        permissions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+
+    Answer:
+      type: object
+      description: Ответ пользователя
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        answerBody:
+          type: string
+          description: тело ответа
+
+    TopicFilterLog:
+      title: Модель лога фильтра
+      properties:
+        searchString:
+          type: string

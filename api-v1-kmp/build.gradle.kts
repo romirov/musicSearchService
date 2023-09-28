@@ -1,6 +1,8 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 plugins {
-    kotlin("multiplatform")
     id("org.openapi.generator")
+    kotlin("multiplatform")
     kotlin("plugin.serialization")
 }
 
@@ -66,9 +68,13 @@ openApiGenerate {
     )
 }
 
-afterEvaluate {
-    val openApiGenerate = tasks.getByName("openApiGenerate")
-    tasks.filter { it.name.startsWith("compile") }.forEach {
-        it.dependsOn(openApiGenerate)
+tasks {
+    val openApiGenerateTask: GenerateTask = getByName("openApiGenerate", GenerateTask::class) {
+        outputDir.set("$buildDir/generate-resources/main/src/commonMain/kotlin")
+        mustRunAfter("compileCommonMainKotlinMetadata")
+    }
+    filter { it.name.startsWith("compile") }.forEach {
+        println("TASK attach $it")
+        it.dependsOn(openApiGenerateTask)
     }
 }
