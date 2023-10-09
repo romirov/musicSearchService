@@ -2,6 +2,7 @@ package ru.mss.app.ktor.plugins
 
 import io.ktor.server.application.*
 import ru.mss.lib.logging.common.MssLoggerProvider
+import ru.mss.lib.logging.logback.mssLoggerLogback
 
 actual fun Application.getLoggerProviderConf(): MssLoggerProvider =
     when (val mode = environment.config.propertyOrNull("ktor.logger")?.getString()) {

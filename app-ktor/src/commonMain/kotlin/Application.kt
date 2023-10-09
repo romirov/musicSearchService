@@ -8,7 +8,7 @@ import io.ktor.server.routing.*
 import ru.mss.api.v1.apiV1Mapper
 import ru.mss.app.ktor.plugins.initAppSettings
 import ru.mss.app.ktor.plugins.initPlugins
-import ru.mss.app.ktor.v2.v1Topic
+import ru.mss.app.ktor.v1.v1Topic
 
 //запуск через main не работает
 fun main(args: Array<String>): Unit = io.ktor.server.cio.EngineMain.main(args)
