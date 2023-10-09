@@ -8,7 +8,7 @@
         </encoder>
     </appender>
 
-    <logger name="ru.otus" level="${LOG_OTUS_LEVEL}" additivity="false">
+    <logger name="ru.mss" level="${LOG_OTUS_LEVEL}" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
 
