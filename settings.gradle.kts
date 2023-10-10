@@ -38,6 +38,7 @@ include("mappers-log")
 include("stubs")
 
 include("biz")
+include("lib-cor")
 
 include("app-common")
 include("app-ktor")
