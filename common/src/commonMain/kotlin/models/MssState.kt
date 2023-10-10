@@ -7,4 +7,5 @@ enum class MssState {
     NONE,
     RUNNING,
     FAILING,
+    FINISHING
 }

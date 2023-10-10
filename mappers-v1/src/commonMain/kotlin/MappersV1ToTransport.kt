@@ -122,5 +122,6 @@ private fun MssError.toTransportTopic() = Error(
 private fun MssState.toResult(): ResponseResult? = when (this) {
     MssState.RUNNING -> ResponseResult.SUCCESS
     MssState.FAILING -> ResponseResult.ERROR
+    MssState.FINISHING -> ResponseResult.SUCCESS
     MssState.NONE -> null
 }
