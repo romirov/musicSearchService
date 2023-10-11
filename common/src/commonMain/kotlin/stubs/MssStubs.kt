@@ -9,5 +9,6 @@ enum class MssStubs {
     BAD_DESCRIPTION,
     CANNOT_DELETE,
     BAD_SEARCH_STRING,
-    BAD_STATUS
+    BAD_STATUS,
+    DB_ERROR,
 }
