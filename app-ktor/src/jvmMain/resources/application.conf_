@@ -1,0 +1,11 @@
+ktor {
+    deployment {
+        port = 8080
+    }
+    application {
+        modules = [
+          ru.mss.app.ktor.ApplicationKt.module,
+          ru.mss.app.ktor.ApplicationJvmKt.moduleJvm,
+        ]
+    }
+}

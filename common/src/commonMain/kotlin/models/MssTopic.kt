@@ -8,4 +8,9 @@ data class MssTopic(
     var status: MssTopicStatus = MssTopicStatus.NONE,
     val answers: MutableList<MssTopicAnswer> = mutableListOf(),
     val permissionsClient: MutableSet<MssTopicPermissionClient> = mutableSetOf()
-)
+) {
+    fun deepCopy(): MssTopic = copy(
+        permissionsClient = permissionsClient.toMutableSet(),
+    )
+
+}

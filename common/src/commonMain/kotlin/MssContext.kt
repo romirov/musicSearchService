@@ -16,6 +16,13 @@ data class MssContext(
     var timeStart: Instant = Instant.NONE,
     var topicRequest: MssTopic = MssTopic(),
     var topicFilterRequest: MssTopicFilter = MssTopicFilter(),
+
+    var topicValidating: MssTopic = MssTopic(),
+    var topicFilterValidating: MssTopicFilter = MssTopicFilter(),
+
+    var topicValidated: MssTopic = MssTopic(),
+    var topicFilterValidated: MssTopicFilter = MssTopicFilter(),
+
     var topicResponse: MssTopic = MssTopic(),
     var topicsResponse: MutableList<MssTopic> = mutableListOf(),
 )
