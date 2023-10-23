@@ -1,5 +1,6 @@
 package ru.mss.biz
 
+import ru.mss.biz.general.initRepo
 import ru.mss.biz.groups.operation
 import ru.mss.biz.groups.stubs
 import ru.mss.biz.validation.*
@@ -73,7 +74,7 @@ class MssTopicProcessor(
                     worker {
                         title = "Подготовка ответа для Read"
                         on { state == MssState.RUNNING }
-                        handle { adRepoDone = adRepoRead }
+                        handle { topicRepoDone = topicRepoRead }
                     }
                 }
                 prepareResult("Подготовка ответа")

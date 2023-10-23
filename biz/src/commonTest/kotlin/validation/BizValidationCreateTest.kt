@@ -4,6 +4,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.mss.biz.MssTopicProcessor
 import ru.mss.common.MssCorSettings
 import ru.mss.common.models.MssCommand
+import ru.mss.repo.stubs.TopicRepoStub
 import kotlin.test.Test
 
 // TODO-validation-5: смотрим пример теста валидации, собранного из тестовых функций-оберток

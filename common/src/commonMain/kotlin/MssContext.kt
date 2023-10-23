@@ -2,6 +2,7 @@ package ru.mss.common
 
 import kotlinx.datetime.Instant
 import ru.mss.common.models.*
+import ru.mss.common.repo.ITopicRepository
 import ru.mss.common.stubs.MssStubs
 
 data class MssContext(
@@ -13,11 +14,11 @@ data class MssContext(
     var workMode: MssWorkMode = MssWorkMode.PROD,
     var stubCase: MssStubs = MssStubs.NONE,
 
-    var adRepo: ITopicRepository = ITopicRepository.NONE,
-    var adRepoRead: MssTopic = MssTopic(), // То, что прочитали из репозитория
-    var adRepoPrepare: MssTopic = MssTopic(), // То, что готовим для сохранения в БД
-    var adRepoDone: MssTopic = MssTopic(),  // Результат, полученный из БД
-    var adsRepoDone: MutableList<MssTopic> = mutableListOf(),
+    var topicRepo: ITopicRepository = ITopicRepository.NONE,
+    var topicRepoRead: MssTopic = MssTopic(), // То, что прочитали из репозитория
+    var topicRepoPrepare: MssTopic = MssTopic(), // То, что готовим для сохранения в БД
+    var topicRepoDone: MssTopic = MssTopic(),  // Результат, полученный из БД
+    var topicsRepoDone: MutableList<MssTopic> = mutableListOf(),
 
     var requestId: MssRequestId = MssRequestId.NONE,
     var timeStart: Instant = Instant.NONE,

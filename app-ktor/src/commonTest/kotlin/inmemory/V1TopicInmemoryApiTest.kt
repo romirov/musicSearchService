@@ -12,6 +12,7 @@ import ru.mss.app.ktor.module
 import ru.mss.common.MssCorSettings
 import ru.mss.common.models.MssTopicId
 import ru.mss.common.models.MssTopicStatus
+import ru.mss.repo.inmemory.TopicRepoInMemory
 import ru.mss.stubs.MssTopicStub
 import kotlin.test.Test
 import kotlin.test.assertEquals
