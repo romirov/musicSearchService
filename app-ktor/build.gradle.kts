@@ -89,6 +89,9 @@ kotlin {
                 implementation(project(":api-log"))
                 implementation(project(":mappers-log"))
                 implementation(project(":lib-logging-common"))
+
+                implementation(project(":repo-in-memory"))
+                implementation(project(":repo-stubs"))
             }
         }
 
@@ -101,6 +104,8 @@ kotlin {
                 implementation(ktor("test-host"))
                 implementation(ktor("content-negotiation", prefix = "client-"))
                 implementation(ktor("websockets", prefix = "client-"))
+
+                implementation(project(":repo-tests"))
             }
         }
 

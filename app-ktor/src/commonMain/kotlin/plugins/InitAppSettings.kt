@@ -7,7 +7,10 @@ import ru.mss.common.MssCorSettings
 
 fun Application.initAppSettings(): MssAppSettings {
     val corSettings = MssCorSettings(
-        loggerProvider = getLoggerProviderConf()
+        loggerProvider = getLoggerProviderConf(),
+        repoTest = TopicRepoInMemory(),
+        repoProd = TopicRepoInMemory(),
+        repoStub = TopicRepoStub(),
     )
 
     return MssAppSettings(

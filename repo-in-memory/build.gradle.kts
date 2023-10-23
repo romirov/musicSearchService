@@ -4,43 +4,38 @@ plugins {
 
 kotlin {
     jvm {}
-//    macosX64 {}
-//    macosArm64 {}
-//    linuxX64 {}
 
     sourceSets {
+        val cache4kVersion: String by project
         val coroutinesVersion: String by project
+        val kmpUUIDVersion: String by project
 
-        //all { languageSettings.optIn("kotlin.RequiresOptIn") }
-
+        @Suppress("UNUSED_VARIABLE")
         val commonMain by getting {
             dependencies {
-                implementation(kotlin("stdlib-common"))
-
                 implementation(project(":common"))
-                implementation(project(":stubs"))
-                implementation(project(":lib-cor"))
+
+                implementation("io.github.reactivecircus.cache4k:cache4k:$cache4kVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("com.benasher44:uuid:$kmpUUIDVersion")
+                implementation(project(":repo-tests"))
+
             }
         }
-
+        @Suppress("UNUSED_VARIABLE")
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-
-                implementation(project(":repo-tests"))
-                implementation(project(":repo-stubs"))
-
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
             }
         }
-
+        @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting {
             dependencies {
-                implementation(kotlin("stdlib"))
+                implementation(kotlin("stdlib-jdk8"))
             }
         }
-
+        @Suppress("UNUSED_VARIABLE")
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))

@@ -8,9 +8,16 @@ data class MssContext(
     var command: MssCommand = MssCommand.NONE,
     var state: MssState = MssState.NONE,
     val errors: MutableList<MssError> = mutableListOf(),
+    var settings: MssCorSettings = MssCorSettings.NONE,
 
     var workMode: MssWorkMode = MssWorkMode.PROD,
     var stubCase: MssStubs = MssStubs.NONE,
+
+    var adRepo: ITopicRepository = ITopicRepository.NONE,
+    var adRepoRead: MssTopic = MssTopic(), // То, что прочитали из репозитория
+    var adRepoPrepare: MssTopic = MssTopic(), // То, что готовим для сохранения в БД
+    var adRepoDone: MssTopic = MssTopic(),  // Результат, полученный из БД
+    var adsRepoDone: MutableList<MssTopic> = mutableListOf(),
 
     var requestId: MssRequestId = MssRequestId.NONE,
     var timeStart: Instant = Instant.NONE,

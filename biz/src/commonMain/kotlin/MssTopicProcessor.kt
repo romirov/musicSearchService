@@ -7,19 +7,23 @@ import ru.mss.biz.workers.*
 import ru.mss.common.MssContext
 import ru.mss.common.MssCorSettings
 import ru.mss.common.models.MssCommand
+import ru.mss.common.models.MssState
 import ru.mss.common.models.MssTopicId
+import ru.mss.lib.chain
 import ru.mss.lib.rootChain
 import ru.mss.lib.worker
+import ru.mss.stubs.MssTopicStub.prepareResult
 
-class MssTopicProcessor (
+class MssTopicProcessor(
     @Suppress("unused")
     private val corSettings: MssCorSettings = MssCorSettings.NONE
 ) {
-    suspend fun exec(ctx: MssContext) = BusinessChain.exec(ctx)
+    suspend fun exec(ctx: MssContext) = BusinessChain.exec(ctx.apply { settings = corSettings })
 
     companion object {
         private val BusinessChain = rootChain<MssContext> {
             initStatus("Инициализация статуса")
+            initRepo("Инициализация репозитория")
 
             operation("Создание объявления", MssCommand.CREATE) {
                 stubs("Обработка стабов") {
@@ -41,6 +45,12 @@ class MssTopicProcessor (
 
                     finishTopicValidation("Завершение проверок")
                 }
+                chain {
+                    title = "Логика сохранения"
+                    repoPrepareCreate("Подготовка объекта для сохранения")
+                    repoCreate("Создание топика в БД")
+                }
+                prepareResult("Подготовка ответа")
             }
             operation("Получить объявление", MssCommand.READ) {
                 stubs("Обработка стабов") {
@@ -57,6 +67,16 @@ class MssTopicProcessor (
 
                     finishTopicValidation("Успешное завершение процедуры валидации")
                 }
+                chain {
+                    title = "Логика чтения"
+                    repoRead("Чтение топика из БД")
+                    worker {
+                        title = "Подготовка ответа для Read"
+                        on { state == MssState.RUNNING }
+                        handle { adRepoDone = adRepoRead }
+                    }
+                }
+                prepareResult("Подготовка ответа")
             }
             operation("Изменить объявление", MssCommand.UPDATE) {
                 stubs("Обработка стабов") {
@@ -81,6 +101,13 @@ class MssTopicProcessor (
 
                     finishTopicValidation("Успешное завершение процедуры валидации")
                 }
+                chain {
+                    title = "Логика сохранения"
+                    repoRead("Чтение топика из БД")
+                    repoPrepareUpdate("Подготовка объекта для обновления")
+                    repoUpdate("Обновление топика в БД")
+                }
+                prepareResult("Подготовка ответа")
             }
             operation("Удалить объявление", MssCommand.DELETE) {
                 stubs("Обработка стабов") {
@@ -91,12 +118,20 @@ class MssTopicProcessor (
                 }
                 validation {
                     worker("Копируем поля в topicValidating") {
-                        topicValidating = topicRequest.deepCopy() }
+                        topicValidating = topicRequest.deepCopy()
+                    }
                     worker("Очистка id") { topicValidating.id = MssTopicId(topicValidating.id.asString().trim()) }
                     validateIdNotEmpty("Проверка на непустой id")
                     validateIdProperFormat("Проверка формата id")
                     finishTopicValidation("Успешное завершение процедуры валидации")
                 }
+                chain {
+                    title = "Логика удаления"
+                    repoRead("Чтение топика из БД")
+                    repoPrepareDelete("Подготовка объекта для удаления")
+                    repoDelete("Удаление топика из БД")
+                }
+                prepareResult("Подготовка ответа")
             }
             operation("Поиск объявлений", MssCommand.SEARCH) {
                 stubs("Обработка стабов") {
@@ -110,6 +145,8 @@ class MssTopicProcessor (
 
                     finishTopicFilterValidation("Успешное завершение процедуры валидации")
                 }
+                repoSearch("Поиск топика в БД по фильтру")
+                prepareResult("Подготовка ответа")
             }
         }.build()
     }
