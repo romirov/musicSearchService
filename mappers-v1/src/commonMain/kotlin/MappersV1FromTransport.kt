@@ -16,8 +16,13 @@ fun MssContext.fromTransport(request: IRequest) = when (request) {
 }
 
 private fun String?.toTopicId() = this?.let { MssTopicId(it) } ?: MssTopicId.NONE
+private fun String?.toTopicLock() = this?.let { MssTopicLock(it) } ?: MssTopicLock.NONE
+private fun TopicReadObject?.toInternal() = if (this != null) {
+    MssTopic(id = id.toTopicId())
+} else {
+    MssTopic()
+}
 private fun String?.toAnswerId() = this?.let { MssTopicAnswerId(it) } ?: MssTopicAnswerId.NONE
-private fun String?.toTopicWithId() = MssTopic(id = this.toTopicId())
 private fun IRequest?.requestId() = this?.requestId?.let { MssRequestId(it) } ?: MssRequestId.NONE
 
 private fun TopicDebug?.transportToWorkMode(): MssWorkMode = when (this?.mode) {
@@ -50,7 +55,7 @@ fun MssContext.fromTransport(request: TopicCreateRequest) {
 fun MssContext.fromTransport(request: TopicReadRequest) {
     command = MssCommand.READ
     requestId = request.requestId()
-    topicRequest = request.topic?.id.toTopicWithId()
+    topicRequest = request.topic.toInternal()
     workMode = request.debug.transportToWorkMode()
     stubCase = request.debug.transportToStubCase()
 }
@@ -66,7 +71,7 @@ fun MssContext.fromTransport(request: TopicUpdateRequest) {
 fun MssContext.fromTransport(request: TopicDeleteRequest) {
     command = MssCommand.DELETE
     requestId = request.requestId()
-    topicRequest = request.topic?.id.toTopicWithId()
+    topicRequest = request.topic.toInternal()
     workMode = request.debug.transportToWorkMode()
     stubCase = request.debug.transportToStubCase()
 }
@@ -93,8 +98,19 @@ private fun TopicUpdateObject.toInternal(): MssTopic = MssTopic(
     id = this.id.toTopicId(),
     title = this.title ?: "",
     description = this.description ?: "",
-    answers = this.answer.fromTransport()
+    answers = this.answer.fromTransport(),
+    status = this.status.fromTransport(),
+    lock = this.lock.toTopicLock(),
 )
+
+private fun TopicDeleteObject?.toInternal(): MssTopic = if (this != null) {
+    MssTopic(
+        id = id.toTopicId(),
+        lock = lock.toTopicLock(),
+    )
+} else {
+    MssTopic()
+}
 
 private fun Answer?.fromTransport(): MutableList<MssTopicAnswer> = when (this) {
     null -> mutableListOf()

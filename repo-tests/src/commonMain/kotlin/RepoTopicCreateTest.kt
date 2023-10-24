@@ -1,10 +1,7 @@
 package ru.mss.repo.tests
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import ru.mss.common.models.MssTopic
-import ru.mss.common.models.MssTopicId
-import ru.mss.common.models.MssTopicStatus
-import ru.mss.common.models.MssUserId
+import ru.mss.common.models.*
 import ru.mss.common.repo.DbTopicRequest
 import ru.mss.common.repo.ITopicRepository
 import ru.otus.otuskotlin.marketplace.backend.repo.tests.runRepoTest
@@ -16,6 +13,8 @@ import kotlin.test.assertNotEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class RepoTopicCreateTest {
     abstract val repo: ITopicRepository
+
+    protected open val lockNew: MssTopicLock = MssTopicLock("20000000-0000-0000-0000-000000000002")
 
     private val createObj = MssTopic(
         title = "create object",

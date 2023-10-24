@@ -22,7 +22,8 @@ fun validationDescriptionCorrect(command: MssCommand, processor: MssTopicProcess
             id = stub.id,
             title = "abc",
             description = "abc",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -41,7 +42,8 @@ fun validationDescriptionTrim(command: MssCommand, processor: MssTopicProcessor)
             id = stub.id,
             title = "abc",
             description = " \n\tabc \n\t",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -60,7 +62,8 @@ fun validationDescriptionEmpty(command: MssCommand, processor: MssTopicProcessor
             id = stub.id,
             title = "abc",
             description = "",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -81,7 +84,8 @@ fun validationDescriptionSymbols(command: MssCommand, processor: MssTopicProcess
             id = stub.id,
             title = "abc",
             description = "!@#$%^&*(),.{}",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)

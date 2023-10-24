@@ -1,8 +1,10 @@
 package ru.mss.common.helpers
 
 import ru.mss.common.MssContext
+import ru.mss.common.exceptions.RepoConcurrencyException
 import ru.mss.common.models.MssError
 import ru.mss.common.models.MssState
+import ru.mss.common.models.MssTopicLock
 
 fun Throwable.asMssError(
     code: String = "unknown",
@@ -55,4 +57,16 @@ fun errorAdministration(
     group = "administration",
     message = "Microservice management error: $description",
     level = level,
+)
+
+fun errorRepoConcurrency(
+    expectedLock: MssTopicLock,
+    actualLock: MssTopicLock?,
+    exception: Exception? = null,
+) = MssError(
+    field = "lock",
+    code = "concurrency",
+    group = "repo",
+    message = "The object has been changed concurrently by another user or process",
+    exception = exception ?: RepoConcurrencyException(expectedLock, actualLock),
 )

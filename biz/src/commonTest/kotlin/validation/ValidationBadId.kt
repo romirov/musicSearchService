@@ -19,7 +19,8 @@ fun validationIdCorrect(command: MssCommand, processor: MssTopicProcessor) = run
             id = MssTopicId("123-234-abc-ABC"),
             title = "abc",
             description = "abc",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -37,7 +38,8 @@ fun validationIdTrim(command: MssCommand, processor: MssTopicProcessor) = runTes
             id = MssTopicId(" \n\t 123-234-abc-ABC \n\t "),
             title = "abc",
             description = "abc",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -55,7 +57,8 @@ fun validationIdEmpty(command: MssCommand, processor: MssTopicProcessor) = runTe
             id = MssTopicId(""),
             title = "abc",
             description = "abc",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -76,7 +79,8 @@ fun validationIdFormat(command: MssCommand, processor: MssTopicProcessor) = runT
             id = MssTopicId("!@#\$%^&*(),.{}"),
             title = "abc",
             description = "abc",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)

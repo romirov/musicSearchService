@@ -1,16 +1,18 @@
 package ru.mss.app.ktor.inmemory
 
+import io.ktor.client.call.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
-import kotlinx.serialization.encodeToString
 import ru.mss.api.v1.apiV1Mapper
 import ru.mss.api.v1.models.*
 import ru.mss.app.ktor.MssAppSettings
 import ru.mss.app.ktor.module
 import ru.mss.common.MssCorSettings
 import ru.mss.common.models.MssTopicId
+import ru.mss.common.models.MssTopicLock
 import ru.mss.common.models.MssTopicStatus
 import ru.mss.repo.inmemory.TopicRepoInMemory
 import ru.mss.stubs.MssTopicStub
@@ -27,6 +29,7 @@ class V1TopicInmemoryApiTest{
         title = "abc"
         description = "abc"
         status = MssTopicStatus.OPENED
+        lock = MssTopicLock(uuidOld)
     }
 
     @Test
@@ -41,7 +44,7 @@ class V1TopicInmemoryApiTest{
             description = "Неизвестна композиция неизвестного автора",
             status = TopicStatus.OPENED
         )
-
+        val client = myClient()
         val response = client.post("/v1/topic/create") {
             val requestObj = TopicCreateRequest(
                 requestId = "1234",
@@ -51,11 +54,9 @@ class V1TopicInmemoryApiTest{
                 )
             )
             contentType(ContentType.Application.Json)
-            val requestJson = apiV1Mapper.encodeToString(requestObj)
-            setBody(requestJson)
+            setBody(requestObj)
         }
-        val responseJson = response.bodyAsText()
-        val responseObj = apiV1Mapper.decodeFromString<TopicCreateResponse>(responseJson)
+        val responseObj = response.body<TopicCreateResponse>()
         assertEquals(200, response.status.value)
         assertEquals(uuidNew, responseObj.topic?.id)
         assertEquals(createTopic.title, responseObj.topic?.title)
@@ -69,7 +70,7 @@ class V1TopicInmemoryApiTest{
         application {
             module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
-
+        val client = myClient()
         val response = client.post("/v1/topic/read") {
             val requestObj = TopicReadRequest(
                 requestId = "1234",
@@ -79,11 +80,9 @@ class V1TopicInmemoryApiTest{
                 )
             )
             contentType(ContentType.Application.Json)
-            val requestJson = apiV1Mapper.encodeToString(requestObj)
-            setBody(requestJson)
+            setBody(requestObj)
         }
-        val responseJson = response.bodyAsText()
-        val responseObj = apiV1Mapper.decodeFromString<TopicReadResponse>(responseJson)
+        val responseObj = response.body<TopicReadResponse>()
         assertEquals(200, response.status.value)
         assertEquals(uuidOld, responseObj.topic?.id)
     }
@@ -100,8 +99,9 @@ class V1TopicInmemoryApiTest{
             title = "Неизвестная композиция",
             description = "Неизвестна композиция неизвестного автора",
             status = TopicStatus.OPENED,
+            lock = initTopic.lock.asString(),
         )
-
+        val client = myClient()
         val response = client.post("/v1/topic/update") {
             val requestObj = TopicUpdateRequest(
                 requestId = "1234",
@@ -111,11 +111,9 @@ class V1TopicInmemoryApiTest{
                 )
             )
             contentType(ContentType.Application.Json)
-            val requestJson = apiV1Mapper.encodeToString(requestObj)
-            setBody(requestJson)
+            setBody(requestObj)
         }
-        val responseJson = response.bodyAsText()
-        val responseObj = apiV1Mapper.decodeFromString<TopicUpdateResponse>(responseJson)
+        val responseObj = response.body<TopicUpdateResponse>()
         assertEquals(200, response.status.value)
         assertEquals(topicUpdate.id, responseObj.topic?.id)
         assertEquals(topicUpdate.title, responseObj.topic?.title)
@@ -129,23 +127,22 @@ class V1TopicInmemoryApiTest{
         application {
             module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
-
+        val client = myClient()
         val response = client.post("/v1/topic/delete") {
             val requestObj = TopicDeleteRequest(
                 requestId = "1234",
                 topic = TopicDeleteObject(
                     id = uuidOld,
+                    lock = initTopic.lock.asString(),
                 ),
                 debug = TopicDebug(
                     mode = TopicRequestDebugMode.TEST,
                 )
             )
             contentType(ContentType.Application.Json)
-            val requestJson = apiV1Mapper.encodeToString(requestObj)
-            setBody(requestJson)
+            setBody(requestObj)
         }
-        val responseJson = response.bodyAsText()
-        val responseObj = apiV1Mapper.decodeFromString<TopicDeleteResponse>(responseJson)
+        val responseObj = response.body<TopicDeleteResponse>()
         assertEquals(200, response.status.value)
         assertEquals(uuidOld, responseObj.topic?.id)
     }
@@ -156,7 +153,7 @@ class V1TopicInmemoryApiTest{
         application {
             module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
-
+        val client = myClient()
         val response = client.post("/v1/topic/search") {
             val requestObj = TopicSearchRequest(
                 requestId = "12345",
@@ -166,13 +163,17 @@ class V1TopicInmemoryApiTest{
                 )
             )
             contentType(ContentType.Application.Json)
-            val requestJson = apiV1Mapper.encodeToString(requestObj)
-            setBody(requestJson)
+            setBody(requestObj)
         }
-        val responseJson = response.bodyAsText()
-        val responseObj = apiV1Mapper.decodeFromString<TopicSearchResponse>(responseJson)
+        val responseObj = response.body<TopicSearchResponse>()
         assertEquals(200, response.status.value)
         assertNotEquals(0, responseObj.topics?.size)
         assertEquals(uuidOld, responseObj.topics?.first()?.id)
+    }
+
+    private fun ApplicationTestBuilder.myClient() = createClient {
+        install(ContentNegotiation) {
+            json(json = apiV1Mapper)
+        }
     }
 }

@@ -74,7 +74,8 @@ private fun MssTopic.toTransportTopic(): TopicResponseObject = TopicResponseObje
     ownerId = ownerId.takeIf { it != MssUserId.NONE }?.asString(),
     permissions = permissionsClient.toTransportTopic(),
     status = status.toTransportTopic(),
-    answers = answers.toTransportAnswers()
+    answers = answers.toTransportAnswers(),
+    lock = lock.takeIf { it != MssTopicLock.NONE }?.asString()
 )
 
 private fun Set<MssTopicPermissionClient>.toTransportTopic(): Set<TopicPermissions>? = this

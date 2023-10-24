@@ -7,10 +7,16 @@ data class MssTopic(
     var ownerId: MssUserId = MssUserId.NONE,
     var status: MssTopicStatus = MssTopicStatus.NONE,
     val answers: MutableList<MssTopicAnswer> = mutableListOf(),
+    var lock: MssTopicLock = MssTopicLock.NONE,
     val permissionsClient: MutableSet<MssTopicPermissionClient> = mutableSetOf()
 ) {
     fun deepCopy(): MssTopic = copy(
         permissionsClient = permissionsClient.toMutableSet(),
     )
 
+    fun isEmpty() = this == NONE
+
+    companion object {
+        private val NONE = MssTopic()
+    }
 }

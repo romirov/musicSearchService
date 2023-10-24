@@ -22,7 +22,8 @@ fun validationTitleCorrect(command: MssCommand, processor: MssTopicProcessor) = 
             id = stub.id,
             title = "abc",
             description = "abc",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -41,7 +42,8 @@ fun validationTitleTrim(command: MssCommand, processor: MssTopicProcessor) = run
             id = stub.id,
             title = " \n\t abc \t\n ",
             description = "abc",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -60,7 +62,8 @@ fun validationTitleEmpty(command: MssCommand, processor: MssTopicProcessor) = ru
             id = stub.id,
             title = "",
             description = "abc",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -81,7 +84,8 @@ fun validationTitleSymbols(command: MssCommand, processor: MssTopicProcessor) = 
             id = MssTopicId("123"),
             title = "!@#$%^&*(),.{}",
             description = "abc",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)

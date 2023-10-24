@@ -12,8 +12,7 @@ fun ICorChainDsl<MssContext>.repoSearch(title: String) = worker {
     on { state == MssState.RUNNING }
     handle {
         val request = DbTopicFilterRequest(
-            titleFilter = topicFilterValidated.searchString,
-            ownerId = topicFilterValidated.ownerId,
+            searchString = topicFilterValidated.searchString
         )
         val result = topicRepo.searchTopic(request)
         val resultTopics = result.data

@@ -6,7 +6,6 @@ import ru.mss.common.models.MssTopicStatus
 import ru.mss.common.models.MssUserId
 import ru.mss.common.repo.DbTopicFilterRequest
 import ru.mss.common.repo.ITopicRepository
-import ru.mss.repo.tests.BaseInitTopics
 import ru.otus.otuskotlin.marketplace.backend.repo.tests.runRepoTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -19,19 +18,10 @@ abstract class RepoTopicSearchTest {
     protected open val initializedObjects: List<MssTopic> = initObjects
 
     @Test
-    fun searchOwner() = runRepoTest {
-        val result = repo.searchTopic(DbTopicFilterRequest(ownerId = searchOwnerId))
+    fun search() = runRepoTest {
+        val result = repo.searchTopic(DbTopicFilterRequest(searchString = "ad2"))
         assertEquals(true, result.isSuccess)
-        val expected = listOf(initializedObjects[1], initializedObjects[3]).sortedBy { it.id.asString() }
-        assertEquals(expected, result.data?.sortedBy { it.id.asString() })
-        assertEquals(emptyList(), result.errors)
-    }
-
-    @Test
-    fun searchStatus() = runRepoTest {
-        val result = repo.searchTopic(DbTopicFilterRequest(status = MssTopicStatus.OPENED))
-        assertEquals(true, result.isSuccess)
-        val expected = listOf(initializedObjects[2], initializedObjects[4]).sortedBy { it.id.asString() }
+        val expected = listOf(initializedObjects[1]).sortedBy { it.id.asString() }
         assertEquals(expected, result.data?.sortedBy { it.id.asString() })
         assertEquals(emptyList(), result.errors)
     }

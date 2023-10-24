@@ -1,8 +1,10 @@
 package ru.mss.biz
 
 import ru.mss.biz.general.initRepo
+import ru.mss.biz.general.prepareResult
 import ru.mss.biz.groups.operation
 import ru.mss.biz.groups.stubs
+import ru.mss.biz.repo.*
 import ru.mss.biz.validation.*
 import ru.mss.biz.workers.*
 import ru.mss.common.MssContext
@@ -10,10 +12,10 @@ import ru.mss.common.MssCorSettings
 import ru.mss.common.models.MssCommand
 import ru.mss.common.models.MssState
 import ru.mss.common.models.MssTopicId
+import ru.mss.common.models.MssTopicLock
 import ru.mss.lib.chain
 import ru.mss.lib.rootChain
 import ru.mss.lib.worker
-import ru.mss.stubs.MssTopicStub.prepareResult
 
 class MssTopicProcessor(
     @Suppress("unused")
@@ -91,10 +93,13 @@ class MssTopicProcessor(
                 validation {
                     worker("Копируем поля в topicValidating") { topicValidating = topicRequest.deepCopy() }
                     worker("Очистка id") { topicValidating.id = MssTopicId(topicValidating.id.asString().trim()) }
+                    worker("Очистка lock") { topicValidating.lock = MssTopicLock(topicValidating.lock.asString().trim()) }
                     worker("Очистка заголовка") { topicValidating.title = topicValidating.title.trim() }
                     worker("Очистка описания") { topicValidating.description = topicValidating.description.trim() }
                     validateIdNotEmpty("Проверка на непустой id")
                     validateIdProperFormat("Проверка формата id")
+                    validateLockNotEmpty("Проверка на непустой lock")
+                    validateLockProperFormat("Проверка формата lock")
                     validateTitleNotEmpty("Проверка на непустой заголовок")
                     validateTitleHasContent("Проверка на наличие содержания в заголовке")
                     validateDescriptionNotEmpty("Проверка на непустое описание")
@@ -122,8 +127,11 @@ class MssTopicProcessor(
                         topicValidating = topicRequest.deepCopy()
                     }
                     worker("Очистка id") { topicValidating.id = MssTopicId(topicValidating.id.asString().trim()) }
+                    worker("Очистка lock") { topicValidating.lock = MssTopicLock(topicValidating.lock.asString().trim()) }
                     validateIdNotEmpty("Проверка на непустой id")
                     validateIdProperFormat("Проверка формата id")
+                    validateLockNotEmpty("Проверка на непустой lock")
+                    validateLockProperFormat("Проверка формата lock")
                     finishTopicValidation("Успешное завершение процедуры валидации")
                 }
                 chain {

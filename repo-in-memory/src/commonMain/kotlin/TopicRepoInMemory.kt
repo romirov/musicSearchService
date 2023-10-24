@@ -2,6 +2,9 @@ package ru.mss.repo.inmemory
 
 import com.benasher44.uuid.uuid4
 import io.github.reactivecircus.cache4k.Cache
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import ru.mss.common.helpers.errorRepoConcurrency
 import ru.mss.common.models.*
 import ru.mss.common.repo.*
 import ru.mss.repo.inmemory.model.TopicEntity
@@ -17,6 +20,7 @@ class TopicRepoInMemory(
     private val cache = Cache.Builder<String, TopicEntity>()
         .expireAfterWrite(ttl)
         .build()
+    private val mutex: Mutex = Mutex()
 
     init {
         initObjects.forEach {
@@ -54,50 +58,54 @@ class TopicRepoInMemory(
             } ?: resultErrorNotFound
     }
 
+    private suspend fun doUpdate(
+        key: String,
+        oldLock: String,
+        okBlock: (oldTopic: TopicEntity) -> DbTopicResponse
+    ): DbTopicResponse = mutex.withLock {
+        val oldTopic = cache.get(key)
+        when {
+            oldTopic == null -> resultErrorNotFound
+            oldTopic.lock != oldLock -> DbTopicResponse(
+                data = oldTopic.toInternal(),
+                isSuccess = false,
+                errors = listOf(errorRepoConcurrency(MssTopicLock(oldLock), oldTopic.lock?.let { MssTopicLock(it) }))
+            )
+
+            else -> okBlock(oldTopic)
+        }
+    }
+
     override suspend fun updateTopic(rq: DbTopicRequest): DbTopicResponse {
         val key = rq.topic.id.takeIf { it != MssTopicId.NONE }?.asString() ?: return resultErrorEmptyId
+        val oldLock = rq.topic.lock.takeIf { it != MssTopicLock.NONE }?.asString() ?: return resultErrorEmptyLock
         val newTopic = rq.topic.copy()
         val entity = TopicEntity(newTopic)
-        return when (cache.get(key)) {
-            null -> resultErrorNotFound
-            else -> {
-                cache.put(key, entity)
-                DbTopicResponse(
-                    data = newTopic,
-                    isSuccess = true,
-                )
-            }
+        return doUpdate(key, oldLock) {
+            cache.put(key, entity)
+            DbTopicResponse(
+                data = newTopic,
+                isSuccess = true,
+            )
         }
     }
 
     override suspend fun deleteTopic(rq: DbTopicIdRequest): DbTopicResponse {
         val key = rq.id.takeIf { it != MssTopicId.NONE }?.asString() ?: return resultErrorEmptyId
-        return when (val oldTopic = cache.get(key)) {
-            null -> resultErrorNotFound
-            else -> {
-                cache.invalidate(key)
-                DbTopicResponse(
-                    data = oldTopic.toInternal(),
-                    isSuccess = true,
-                )
-            }
+        val oldLock = rq.lock.takeIf { it != MssTopicLock.NONE }?.asString() ?: return resultErrorEmptyLock
+        return doUpdate(key, oldLock) { oldTopic ->
+            cache.invalidate(key)
+            DbTopicResponse(
+                data = oldTopic.toInternal(),
+                isSuccess = true,
+            )
         }
     }
 
     override suspend fun searchTopic(rq: DbTopicFilterRequest): DbTopicsResponse {
         val result = cache.asMap().asSequence()
             .filter { entry ->
-                rq.ownerId.takeIf { it != MssUserId.NONE }?.let {
-                    it.asString() == entry.value.ownerId
-                } ?: true
-            }
-            .filter { entry ->
-                rq.status.takeIf { it != MssTopicStatus.NONE }?.let {
-                    it.name == entry.value.status
-                } ?: true
-            }
-            .filter { entry ->
-                rq.titleFilter.takeIf { it.isNotBlank() }?.let {
+                rq.searchString.takeIf { it.isNotBlank() }?.let {
                     entry.value.title?.contains(it) ?: false
                 } ?: true
             }
@@ -119,6 +127,18 @@ class TopicRepoInMemory(
                     group = "validation",
                     field = "id",
                     message = "Id must not be null or blank"
+                )
+            )
+        )
+        val resultErrorEmptyLock = DbTopicResponse(
+            data = null,
+            isSuccess = false,
+            errors = listOf(
+                MssError(
+                    code = "lock-empty",
+                    group = "validation",
+                    field = "lock",
+                    message = "Lock must not be null or blank"
                 )
             )
         )
