@@ -22,7 +22,8 @@ class BizRepoDeleteTest {
         title = "abc",
         description = "abc",
         ownerId = userId,
-        status = MssTopicStatus.OPENED
+        status = MssTopicStatus.OPENED,
+        lock = MssTopicLock("123-234-abc-ABC"),
     )
     private val repo by lazy {
         TopicRepositoryMock(
@@ -53,6 +54,7 @@ class BizRepoDeleteTest {
     fun repoDeleteSuccessTest() = runTest {
         val topicToUpdate = MssTopic(
             id = MssTopicId("123"),
+            lock = MssTopicLock("123-234-abc-ABC"),
         )
         val ctx = MssContext(
             command = command,

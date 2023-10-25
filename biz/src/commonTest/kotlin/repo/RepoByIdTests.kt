@@ -47,7 +47,8 @@ fun repoNotFoundTest(command: MssCommand) = runTest {
             id = MssTopicId("12345"),
             title = "xyz",
             description = "xyz",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)

@@ -2,14 +2,21 @@ package ru.mss.biz.validation
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.mss.biz.MssTopicProcessor
+import ru.mss.common.MssCorSettings
 import ru.mss.common.models.MssCommand
+import ru.mss.repo.stubs.TopicRepoStub
 import kotlin.test.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BizValidationUpdateTest {
 
     private val command = MssCommand.UPDATE
-    private val processor by lazy { MssTopicProcessor() }
+    private val settings by lazy {
+        MssCorSettings(
+            repoTest = TopicRepoStub()
+        )
+    }
+    private val processor by lazy { MssTopicProcessor(settings) }
 
     @Test fun correctTitle() = validationTitleCorrect(command, processor)
     @Test fun trimTitle() = validationTitleTrim(command, processor)

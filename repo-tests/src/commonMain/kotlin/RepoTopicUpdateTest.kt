@@ -1,10 +1,8 @@
 package ru.mss.repo.tests
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import ru.mss.common.models.MssTopic
-import ru.mss.common.models.MssTopicId
-import ru.mss.common.models.MssTopicStatus
-import ru.mss.common.models.MssUserId
+import kotlinx.coroutines.test.runTest
+import ru.mss.common.models.*
 import ru.mss.common.repo.DbTopicRequest
 import ru.mss.common.repo.ITopicRepository
 import ru.otus.otuskotlin.marketplace.backend.repo.tests.runRepoTest
@@ -16,7 +14,10 @@ import kotlin.test.assertEquals
 abstract class RepoTopicUpdateTest {
     abstract val repo: ITopicRepository
     protected open val updateSucc = initObjects[0]
-    private val updateIdNotFound = MssTopicId("topic-repo-update-not-found")
+    protected val updateConc = initObjects[1]
+    private val updateIdNotFound = MssTopicId("ad-repo-update-not-found")
+    protected val lockBad = MssTopicLock("20000000-0000-0000-0000-000000000009")
+    protected val lockNew = MssTopicLock("20000000-0000-0000-0000-000000000002")
 
     private val reqUpdateSucc by lazy {
         MssTopic(
@@ -24,7 +25,8 @@ abstract class RepoTopicUpdateTest {
             title = "update object",
             description = "update object description",
             ownerId = MssUserId("owner-123"),
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = initObjects.first().lock,
         )
     }
     private val reqUpdateNotFound = MssTopic(
@@ -32,7 +34,16 @@ abstract class RepoTopicUpdateTest {
         title = "update object not found",
         description = "update object not found description",
         ownerId = MssUserId("owner-123"),
-        status = MssTopicStatus.OPENED
+        status = MssTopicStatus.OPENED,
+        lock = initObjects.first().lock,
+    )
+    private val reqUpdateConc = MssTopic(
+        id = updateConc.id,
+        title = "update object not found",
+        description = "update object not found description",
+        ownerId = MssUserId("owner-123"),
+        status = MssTopicStatus.OPENED,
+        lock = lockBad,
     )
 
     @Test
@@ -53,6 +64,15 @@ abstract class RepoTopicUpdateTest {
         assertEquals(null, result.data)
         val error = result.errors.find { it.code == "not-found" }
         assertEquals("id", error?.field)
+    }
+
+    @Test
+    fun updateConcurrencyError() = runTest {
+        val result = repo.updateTopic(DbTopicRequest(reqUpdateConc))
+        assertEquals(false, result.isSuccess)
+        val error = result.errors.find { it.code == "concurrency" }
+        assertEquals("lock", error?.field)
+        assertEquals(updateConc, result.data)
     }
 
     companion object : BaseInitTopics("update") {

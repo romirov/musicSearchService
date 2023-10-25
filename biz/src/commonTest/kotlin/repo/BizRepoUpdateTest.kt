@@ -55,7 +55,8 @@ class BizRepoUpdateTest {
             id = MssTopicId("123"),
             title = "xyz",
             description = "xyz",
-            status = MssTopicStatus.OPENED
+            status = MssTopicStatus.OPENED,
+            lock = MssTopicLock("123-234-abc-ABC"),
         )
         val ctx = MssContext(
             command = command,
