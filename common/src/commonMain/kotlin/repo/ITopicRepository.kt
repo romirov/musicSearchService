@@ -6,6 +6,7 @@ interface ITopicRepository {
     suspend fun updateTopic(rq: DbTopicRequest): DbTopicResponse
     suspend fun deleteTopic(rq: DbTopicIdRequest): DbTopicResponse
     suspend fun searchTopic(rq: DbTopicFilterRequest): DbTopicsResponse
+
     companion object {
         val NONE = object : ITopicRepository {
             override suspend fun createTopic(rq: DbTopicRequest): DbTopicResponse {

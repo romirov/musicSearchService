@@ -2,6 +2,7 @@ package ru.mss.app.ktor.repo
 
 
 import com.benasher44.uuid.uuid4
+import kotlinx.coroutines.runBlocking
 import org.testcontainers.containers.PostgreSQLContainer
 import ru.mss.common.models.MssTopic
 import ru.mss.repo.postgresql.RepoTopicSQL
@@ -38,17 +39,16 @@ object SqlTestCompanion {
         test: String,
         initObjects: Collection<MssTopic> = emptyList(),
         randomUuid: () -> String = { uuid4().toString() },
-    ): RepoTopicSQL {
-        return RepoTopicSQL(
-            properties = SqlProperties(
-                url = url,
-                user = USER,
-                password = PASS,
-                schema = SCHEMA,
-//                table = "ad-$test",
-            ),
-            initObjects = initObjects,
-            randomUuid = randomUuid
-        )
-    }
+    ): RepoTopicSQL = RepoTopicSQL(
+        properties = SqlProperties(
+            url = url,
+            user = USER,
+            password = PASS,
+            schema = SCHEMA,
+            tableTopic = "topic-$test",
+            tableAnswer = "answer-$test",
+        ),
+        initObjects = initObjects,
+        randomUuid = randomUuid
+    )
 }

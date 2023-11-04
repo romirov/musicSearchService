@@ -5,5 +5,6 @@ data class SqlProperties(
     val user: String = "postgres",
     val password: String = "musicsearchservice-pass",
     val schema: String = "musicsearchservice",
-//    val table: String = "topic",
+    val tableTopic: String = "topic",
+    val tableAnswer: String = "answer",
 )

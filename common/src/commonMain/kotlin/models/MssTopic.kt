@@ -6,7 +6,7 @@ data class MssTopic(
     var description: String = "",
     var ownerId: MssUserId = MssUserId.NONE,
     var status: MssTopicStatus = MssTopicStatus.NONE,
-    val answers: MutableList<MssTopicAnswer> = mutableListOf(),
+    var answers: MutableList<MssTopicAnswer> = mutableListOf(),
     var lock: MssTopicLock = MssTopicLock.NONE,
     val permissionsClient: MutableSet<MssTopicPermissionClient> = mutableSetOf()
 ) {

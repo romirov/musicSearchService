@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import ru.mss.common.models.*
 
-object TopicTable : Table("topic") {
+class TopicTable(tableName: String = "topic") : Table(tableName) {
     val id = varchar("id", 128)
     val title = varchar("title", 128)
     val description = text("description")
@@ -16,15 +16,15 @@ object TopicTable : Table("topic") {
 
     override val primaryKey = PrimaryKey(id)
 
-    fun from(res: ResultRow) = MssTopic(
+    fun from(res: ResultRow, answerTable: AnswerTable) = MssTopic(
         id = MssTopicId(res[id].toString()),
         title = res[title],
         description = res[description],
         ownerId = MssUserId(res[owner].toString()),
         status = res[status],
-        answers = AnswerTable
-            .select { AnswerTable.topicId eq res[id] }
-            .map { answerRes -> AnswerTable.from(answerRes) }.toMutableList(),
+        answers = answerTable
+            .select { answerTable.topicId eq res[id] }
+            .map { answerRes -> answerTable.from(answerRes) }.toMutableList(),
         lock = MssTopicLock(res[lock])
     )
 

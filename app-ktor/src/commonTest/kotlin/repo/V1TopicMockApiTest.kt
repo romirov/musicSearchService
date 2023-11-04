@@ -1,17 +1,16 @@
 package ru.mss.app.ktor.repo
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.serialization.jackson.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
 import org.junit.Test
+import ru.mss.api.v1.apiV1Mapper
 import ru.mss.api.v1.models.*
 import ru.mss.app.ktor.MssAppSettings
-import ru.mss.app.ktor.moduleJvm
+import ru.mss.app.ktor.module
 import ru.mss.common.MssCorSettings
 import ru.mss.common.models.MssTopic
 import ru.mss.common.repo.DbTopicResponse
@@ -37,7 +36,7 @@ class V1TopicMockApiTest {
             }
         )
         application {
-            moduleJvm(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
+            module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
         val client = myClient()
 
@@ -80,11 +79,11 @@ class V1TopicMockApiTest {
             }
         )
         application {
-            moduleJvm(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
+            module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
         val client = myClient()
 
-        val response = client.post("/v1/ropic/read") {
+        val response = client.post("/v1/topic/read") {
             val requestObj = TopicReadRequest(
                 requestId = "12345",
                 topic = TopicReadObject(topicId.asString()),
@@ -120,7 +119,7 @@ class V1TopicMockApiTest {
             }
         )
         application {
-            moduleJvm(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
+            module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
         val client = myClient()
 
@@ -137,8 +136,8 @@ class V1TopicMockApiTest {
                 requestId = "12345",
                 topic = TopicUpdateObject(
                     id = "666",
-                    title = "Болт",
-                    description = "КРУТЕЙШИЙ",
+                    title = "Неизвестная композиция",
+                    description = "Неизвестна композиция неизвестного автора",
                     status = TopicStatus.OPENED,
                     lock = "123",
                 ),
@@ -180,7 +179,7 @@ class V1TopicMockApiTest {
                     )
                 }
             )
-            moduleJvm(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
+            module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
 
         val client = myClient()
@@ -222,7 +221,7 @@ class V1TopicMockApiTest {
                         )
                     }
                 )
-            moduleJvm(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
+            module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
         val client = myClient()
 
@@ -244,12 +243,7 @@ class V1TopicMockApiTest {
 
     private fun ApplicationTestBuilder.myClient() = createClient {
         install(ContentNegotiation) {
-            jackson {
-                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-
-                enable(SerializationFeature.INDENT_OUTPUT)
-                writerWithDefaultPrettyPrinter()
-            }
+            json(json = apiV1Mapper)
         }
     }
 }

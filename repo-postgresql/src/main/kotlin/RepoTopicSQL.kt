@@ -15,8 +15,8 @@ class RepoTopicSQL(
     initObjects: Collection<MssTopic> = emptyList(),
     val randomUuid: () -> String = { uuid4().toString() },
 ) : ITopicRepository {
-    private val topicTable = TopicTable
-    private val answerTable = AnswerTable
+    private val topicTable = TopicTable(properties.tableTopic)
+    private val answerTable = AnswerTable(properties.tableAnswer, topicTable.tableName)
 
     private val driver = when {
         properties.url.startsWith("jdbc:postgresql://") -> "org.postgresql.Driver"
@@ -41,7 +41,9 @@ class RepoTopicSQL(
                 to(it, topic, randomUuid)
             }
             .resultedValues
-            ?.map { topicTable.from(it) }
+            ?.map {
+                topicTable.from(it, answerTable)
+            }
         return res?.first() ?: throw RuntimeException("BD error: insert statement returned empty result")
     }
 
@@ -65,7 +67,7 @@ class RepoTopicSQL(
         val res = topicTable.select {
             topicTable.id eq id.asString()
         }.singleOrNull() ?: return DbTopicResponse.errorNotFound
-        return DbTopicResponse.success(topicTable.from(res))
+        return DbTopicResponse.success(topicTable.from(res, answerTable))
     }
 
     override suspend fun readTopic(rq: DbTopicIdRequest): DbTopicResponse = transactionWrapper { read(rq.id) }
@@ -80,19 +82,12 @@ class RepoTopicSQL(
 
             val current = topicTable.select { topicTable.id eq id.asString() }
                 .singleOrNull()
-                ?.let { topicTable.from(it) }
+                ?.let { topicTable.from(it, answerTable) }
 
             when {
                 current == null -> DbTopicResponse.errorNotFound
                 current.lock != lock -> DbTopicResponse.errorConcurrent(lock, current)
-                else -> {
-                    if(current.answers.last().id.asString().isEmpty()) {
-                        answerTable.insert {
-                            to(it, current.id.asString(), current.answers.last(), randomUuid)
-                        }
-                    }
-                    block(current)
-                }
+                else -> block(current)
             }
         }
 
@@ -101,12 +96,22 @@ class RepoTopicSQL(
         topicTable.update({ topicTable.id eq rq.topic.id.asString() }) {
             to(it, rq.topic.copy(lock = MssTopicLock(randomUuid())), randomUuid)
         }
+        if (rq.topic.answers.isNotEmpty()) {
+            answerTable.insert {
+                to(it, rq.topic.id.asString(), rq.topic.answers.last(), randomUuid)
+            }
+        }
         read(rq.topic.id)
     }
 
     override suspend fun deleteTopic(rq: DbTopicIdRequest): DbTopicResponse = update(rq.id, rq.lock) {
         topicTable.deleteWhere { id eq rq.id.asString() }
         DbTopicResponse.success(it)
+    }
+
+    suspend fun deleteAllTopics(): DbTopicResponse = transactionWrapper {
+        topicTable.deleteAll()
+        DbTopicResponse(data = null, isSuccess = true)
     }
 
     override suspend fun searchTopic(rq: DbTopicFilterRequest): DbTopicsResponse =
@@ -122,7 +127,7 @@ class RepoTopicSQL(
                     }
                 }.reduce { a, b -> a and b }
             }
-            DbTopicsResponse(data = res.map { topicTable.from(it) }, isSuccess = true)
+            DbTopicsResponse(data = res.map { topicTable.from(it, answerTable) }, isSuccess = true)
         }, {
             DbTopicsResponse.error(it.asMssError())
         })

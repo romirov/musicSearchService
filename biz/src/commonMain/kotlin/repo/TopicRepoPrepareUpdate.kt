@@ -15,6 +15,7 @@ fun ICorChainDsl<MssContext>.repoPrepareUpdate(title: String) = worker {
             this.title = topicValidated.title
             description = topicValidated.description
             status = topicValidated.status
+            answers = topicValidated.answers
         }
     }
 }

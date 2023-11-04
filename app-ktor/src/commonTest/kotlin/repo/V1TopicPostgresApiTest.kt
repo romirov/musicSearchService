@@ -1,21 +1,21 @@
 package ru.mss.app.ktor.repo
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.serialization.jackson.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
+import ru.mss.api.v1.apiV1Mapper
 import ru.mss.api.v1.models.*
 import ru.mss.app.ktor.MssAppSettings
-import ru.mss.app.ktor.moduleJvm
+import ru.mss.app.ktor.module
 import ru.mss.app.ktor.repo.SqlTestCompanion.repoUnderTestContainer
 import ru.mss.common.MssCorSettings
+import ru.mss.common.models.MssTopicAnswerId
 import ru.mss.common.models.MssTopicId
 import ru.mss.common.models.MssTopicLock
 import ru.mss.common.models.MssTopicStatus
@@ -26,8 +26,7 @@ import kotlin.test.assertNotEquals
 class V1TopicPostgresApiTest {
     private val uuidOld = "10000000-0000-0000-0000-000000000001"
     private val uuidNew = "10000000-0000-0000-0000-000000000002"
-    private val uuidSup = "10000000-0000-0000-0000-000000000003"
-    private val initAd = MssTopicStub.prepareResult {
+    private val initTopic = MssTopicStub.prepareResult {
         id = MssTopicId(uuidOld)
         title = "abc"
         description = "abc"
@@ -52,9 +51,9 @@ class V1TopicPostgresApiTest {
     @Test
     fun create() = testApplication {
 //        val repo = AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
-        val repo = repoUnderTestContainer(test = "create", initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val repo = repoUnderTestContainer(test = "create", initObjects = listOf(initTopic), randomUuid = { uuidNew })
         application {
-            moduleJvm(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
+            module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
         val client = myClient()
 
@@ -86,9 +85,9 @@ class V1TopicPostgresApiTest {
     @Test
     fun read() = testApplication {
 //        val repo = AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
-        val repo = repoUnderTestContainer(test = "read", initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val repo = repoUnderTestContainer(test = "read", initObjects = listOf(initTopic), randomUuid = { uuidNew })
         application {
-            moduleJvm(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
+            module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
         val client = myClient()
 
@@ -111,9 +110,9 @@ class V1TopicPostgresApiTest {
     @Test
     fun update() = testApplication {
 //        val repo = AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
-        val repo = repoUnderTestContainer(test = "update", initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val repo = repoUnderTestContainer(test = "update", initObjects = listOf(initTopic), randomUuid = { uuidNew })
         application {
-            moduleJvm(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
+            module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
         val client = myClient()
 
@@ -122,7 +121,12 @@ class V1TopicPostgresApiTest {
             title = "Неизвестная композиция",
             description = "Неизвестна композиция неизвестного автора",
             status = TopicStatus.OPENED,
-            lock = initAd.lock.asString(),
+            answer = Answer(
+                id = uuidNew,
+                userId = "123",
+                answerBody = "Моцарт"
+            ),
+            lock = initTopic.lock.asString(),
         )
 
         val response = client.post("/v1/topic/update") {
@@ -147,9 +151,9 @@ class V1TopicPostgresApiTest {
     @Test
     fun delete() = testApplication {
 //        val repo = AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
-        val repo = repoUnderTestContainer(test = "delete", initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val repo = repoUnderTestContainer(test = "delete", initObjects = listOf(initTopic), randomUuid = { uuidNew })
         application {
-            moduleJvm(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
+            module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
         val client = myClient()
 
@@ -158,7 +162,7 @@ class V1TopicPostgresApiTest {
                 requestId = "12345",
                 topic = TopicDeleteObject(
                     id = uuidOld,
-                    lock = initAd.lock.asString(),
+                    lock = initTopic.lock.asString(),
                 ),
                 debug = TopicDebug(
                     mode = TopicRequestDebugMode.TEST,
@@ -175,9 +179,9 @@ class V1TopicPostgresApiTest {
     @Test
     fun search() = testApplication {
 //        val repo = AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
-        val repo = repoUnderTestContainer(test = "search", initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val repo = repoUnderTestContainer(test = "search", initObjects = listOf(initTopic), randomUuid = { uuidNew })
         application {
-            moduleJvm(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
+            module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
         val client = myClient()
 
@@ -200,13 +204,7 @@ class V1TopicPostgresApiTest {
 
     private fun ApplicationTestBuilder.myClient() = createClient {
         install(ContentNegotiation) {
-            jackson {
-                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-
-                enable(SerializationFeature.INDENT_OUTPUT)
-                writerWithDefaultPrettyPrinter()
-            }
+            json(json = apiV1Mapper)
         }
     }
-
 }
