@@ -7,7 +7,9 @@ import io.ktor.server.testing.*
 import kotlinx.serialization.encodeToString
 import ru.mss.api.v1.apiV1Mapper
 import ru.mss.api.v1.models.*
+import ru.mss.app.ktor.MssAppSettings
 import ru.mss.app.ktor.module
+import ru.mss.common.MssCorSettings
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -15,7 +17,7 @@ class V1TopicStubApiTest {
 
     @Test
     fun create() = testApplication {
-        application { module() }
+        application { module(MssAppSettings(corSettings = MssCorSettings())) }
         val response = client.post("/v1/topic/create") {
             val requestObj = TopicCreateRequest(
                 requestId = "12345",
@@ -41,7 +43,7 @@ class V1TopicStubApiTest {
 
     @Test
     fun read() = testApplication {
-        application { module() }
+        application { module(MssAppSettings(corSettings = MssCorSettings())) }
         val response = client.post("/v1/topic/read") {
             val requestObj = TopicReadRequest(
                 requestId = "12345",
@@ -63,7 +65,7 @@ class V1TopicStubApiTest {
 
     @Test
     fun update() = testApplication {
-        application { module() }
+        application { module(MssAppSettings(corSettings = MssCorSettings())) }
         val response = client.post("/v1/topic/update") {
             val requestObj = TopicUpdateRequest(
                 requestId = "12345",
@@ -96,7 +98,7 @@ class V1TopicStubApiTest {
 
     @Test
     fun delete() = testApplication {
-        application { module() }
+        application { module(MssAppSettings(corSettings = MssCorSettings())) }
         val response = client.post("/v1/topic/delete") {
             val requestObj = TopicDeleteRequest(
                 requestId = "12345",
@@ -121,7 +123,7 @@ class V1TopicStubApiTest {
 
     @Test
     fun search() = testApplication {
-        application { module() }
+        application { module(MssAppSettings(corSettings = MssCorSettings())) }
         val response = client.post("/v1/topic/search") {
             val requestObj = TopicSearchRequest(
                 requestId = "12345",

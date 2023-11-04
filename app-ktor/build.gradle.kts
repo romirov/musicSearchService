@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.util.suffixIfNot
 val ktorVersion: String by project
 val logbackVersion: String by project
 val serializationVersion: String by project
+val testcontainersVersion: String by project
+val kmpUUIDVersion: String by project
 
 // ex: Converts to "io.ktor:ktor-ktor-server-netty:2.0.1" with only ktor("netty")
 fun ktor(module: String, prefix: String = "server-", version: String? = this@Build_gradle.ktorVersion): Any =
@@ -137,6 +139,8 @@ kotlin {
                 implementation(project(":lib-logging-logback"))
                 implementation("com.sndyuk:logback-more-appenders:1.8.8")
                 implementation("org.fluentd:fluent-logger:0.3.4")
+
+                implementation(project(":repo-postgresql"))
             }
         }
 
@@ -146,6 +150,9 @@ kotlin {
                 implementation(ktor("test-host")) // "io.ktor:ktor-server-test-host:$ktorVersion"
                 implementation(ktor("content-negotiation", prefix = "client-"))
                 implementation(ktor("websockets", prefix = "client-"))
+
+                implementation("org.testcontainers:postgresql:$testcontainersVersion")
+                implementation("com.benasher44:uuid:$kmpUUIDVersion")
             }
         }
     }

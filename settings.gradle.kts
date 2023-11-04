@@ -47,6 +47,7 @@ include("app-kafka")
 include("lib-logging-common")
 include("lib-logging-logback")
 
-include("repo-in-memory")
 include("repo-stubs")
 include("repo-tests")
+include("repo-in-memory")
+include("repo-postgresql")
