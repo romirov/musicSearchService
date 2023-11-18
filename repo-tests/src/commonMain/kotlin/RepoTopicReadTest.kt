@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.marketplace.backend.repo.tests
+package ru.mss.repo.tests
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.mss.common.models.MssTopic
@@ -6,6 +6,7 @@ import ru.mss.common.models.MssTopicId
 import ru.mss.common.repo.DbTopicIdRequest
 import ru.mss.common.repo.ITopicRepository
 import ru.mss.repo.tests.BaseInitTopics
+import ru.mss.repo.tests.runRepoTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

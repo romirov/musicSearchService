@@ -11,7 +11,7 @@ fun ICorChainDsl<MssContext>.validateIdProperFormat(title: String) = worker {
     this.title = title
 
     // Может быть вынесен в MssTopicId для реализации различных форматов
-    val regExp = Regex("^[0-9a-zA-Z-]+$")
+    val regExp = Regex("^[0-9a-zA-Z#:-]+$")
     on { topicValidating.id != MssTopicId.NONE && ! topicValidating.id.asString().matches(regExp) }
     handle {
         val encodedId = topicValidating.id.asString()

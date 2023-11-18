@@ -4,7 +4,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.mss.common.models.*
 import ru.mss.common.repo.DbTopicRequest
 import ru.mss.common.repo.ITopicRepository
-import ru.otus.otuskotlin.marketplace.backend.repo.tests.runRepoTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals

@@ -6,7 +6,7 @@ dependencies {
     val exposedVersion: String by project
     val postgresDriverVersion: String by project
     val kmpUUIDVersion: String by project
-    val testcontainersVersion: String by project
+    val testContainersVersion: String by project
 
     implementation(kotlin("stdlib"))
 
@@ -20,6 +20,6 @@ dependencies {
     implementation("com.benasher44:uuid:$kmpUUIDVersion")
 
 
-    testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
+    testImplementation("org.testcontainers:postgresql:$testContainersVersion")
     testImplementation(project(":repo-tests"))
 }

@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.util.suffixIfNot
 val ktorVersion: String by project
 val logbackVersion: String by project
 val serializationVersion: String by project
-val testcontainersVersion: String by project
+val testContainersVersion: String by project
 val kmpUUIDVersion: String by project
 
 // ex: Converts to "io.ktor:ktor-ktor-server-netty:2.0.1" with only ktor("netty")
@@ -94,6 +94,8 @@ kotlin {
 
                 implementation(project(":repo-in-memory"))
                 implementation(project(":repo-stubs"))
+
+                implementation(project(":repo-gremlin"))
             }
         }
 
@@ -151,7 +153,7 @@ kotlin {
                 implementation(ktor("content-negotiation", prefix = "client-"))
                 implementation(ktor("websockets", prefix = "client-"))
 
-                implementation("org.testcontainers:postgresql:$testcontainersVersion")
+                implementation("org.testcontainers:postgresql:$testContainersVersion")
                 implementation("com.benasher44:uuid:$kmpUUIDVersion")
             }
         }

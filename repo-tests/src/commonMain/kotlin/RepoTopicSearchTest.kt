@@ -6,7 +6,6 @@ import ru.mss.common.models.MssTopicStatus
 import ru.mss.common.models.MssUserId
 import ru.mss.common.repo.DbTopicFilterRequest
 import ru.mss.common.repo.ITopicRepository
-import ru.otus.otuskotlin.marketplace.backend.repo.tests.runRepoTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
