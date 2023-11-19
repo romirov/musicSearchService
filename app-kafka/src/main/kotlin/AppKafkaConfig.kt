@@ -1,8 +1,10 @@
 package ru.mss.app.kafka
 
+import ru.mss.app.common.AuthConfig
 import ru.mss.app.common.IMssAppSettings
 import ru.mss.biz.MssTopicProcessor
 import ru.mss.common.MssCorSettings
+import ru.mss.lib.logging.common.MssLoggerProvider
 
 class AppKafkaConfig(
     val kafkaHosts: List<String> = KAFKA_HOSTS,
@@ -11,6 +13,8 @@ class AppKafkaConfig(
     val kafkaTopicOutV1: String = KAFKA_TOPIC_OUT_V1,
     override val corSettings: MssCorSettings = MssCorSettings(),
     override val processor: MssTopicProcessor = MssTopicProcessor(corSettings),
+    override val logger: MssLoggerProvider = MssLoggerProvider(),
+    override val auth: AuthConfig = AuthConfig.NONE,
 ) : IMssAppSettings {
     companion object {
         const val KAFKA_HOST_VAR = "KAFKA_HOSTS"

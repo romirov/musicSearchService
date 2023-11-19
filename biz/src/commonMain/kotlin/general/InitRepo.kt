@@ -17,6 +17,7 @@ fun ICorChainDsl<MssContext>.initRepo(title: String) = worker {
         topicRepo = when {
             workMode == MssWorkMode.TEST -> settings.repoTest
             workMode == MssWorkMode.STUB -> settings.repoStub
+            principal.groups.contains(MssUserGroups.TEST) -> settings.repoTest
             else -> settings.repoProd
         }
         if (workMode != MssWorkMode.STUB && topicRepo == ITopicRepository.NONE) fail(

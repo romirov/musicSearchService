@@ -37,7 +37,6 @@ class BizRepoReadTest {
     }
     private val processor by lazy { MssTopicProcessor(settings) }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun repoReadSuccessTest() = runTest {
         val ctx = MssContext(

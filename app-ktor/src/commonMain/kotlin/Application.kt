@@ -2,6 +2,7 @@ package ru.mss.app.ktor
 
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -27,8 +28,9 @@ fun Application.module(appSettings: MssAppSettings = initAppSettings()){
             install(ContentNegotiation) {
                 json(apiV1Mapper)
             }
-
-            v1Topic(appSettings)
+            authenticate("auth-jwt") {
+                v1Topic(appSettings)
+            }
         }
     }
 }

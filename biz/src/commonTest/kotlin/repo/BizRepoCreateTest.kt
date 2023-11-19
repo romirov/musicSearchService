@@ -36,7 +36,6 @@ class BizRepoCreateTest {
     )
     private val processor = MssTopicProcessor(settings)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun repoCreateSuccessTest() = runTest {
         val ctx = MssContext(

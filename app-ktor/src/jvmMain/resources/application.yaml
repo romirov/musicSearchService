@@ -2,16 +2,31 @@
 # в этом случае необходимо сформировать application.conf
 
 ktor:
-  development: true
-  deployment:
-    port: 8080
-  watch:
-    - classes
-    - resources
   application:
     modules:
-      - "ru.mss.app.ktor.ApplicationJvmKt.moduleJvm"
+      - ru.mss.app.ktor.ApplicationJvmKt.moduleJvm
+  deployment:
+    port: 8080
   urls:
     - "http://127.0.0.1:8080/"
     - "http://0.0.0.0:8080/"
     - "http://192.168.0.182:8080/"
+  watch:
+    - classes
+    - resources
+musicsearchservice:
+  repository:
+    test: inmemory
+    prod: inmemory
+    # prod: psql
+    psql:
+      password: musicsearchservice-pass
+      schema: musicsearchservice
+      url: jdbc:postgresql://localhost:5432/musicsearchservice
+      user: postgres
+    jwt:
+      secret: "secret"
+      issuer: "OtusKotlin"
+      audience: "topic-users"
+      realm: "mss-topics"
+      clientId: "otus-musicsearchservice"

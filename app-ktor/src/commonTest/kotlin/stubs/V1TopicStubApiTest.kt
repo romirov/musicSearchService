@@ -7,7 +7,9 @@ import io.ktor.server.testing.*
 import kotlinx.serialization.encodeToString
 import ru.mss.api.v1.apiV1Mapper
 import ru.mss.api.v1.models.*
+import ru.mss.app.common.AuthConfig
 import ru.mss.app.ktor.MssAppSettings
+import ru.mss.app.ktor.auth.addAuth
 import ru.mss.app.ktor.module
 import ru.mss.common.MssCorSettings
 import kotlin.test.Test
@@ -32,6 +34,7 @@ class V1TopicStubApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(config = AuthConfig.TEST)
             val requestJson = apiV1Mapper.encodeToString(requestObj)
             setBody(requestJson)
         }
@@ -54,6 +57,7 @@ class V1TopicStubApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(config = AuthConfig.TEST)
             val requestJson = apiV1Mapper.encodeToString(requestObj)
             setBody(requestJson)
         }
@@ -87,6 +91,7 @@ class V1TopicStubApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(config = AuthConfig.TEST)
             val requestJson = apiV1Mapper.encodeToString(requestObj)
             setBody(requestJson)
         }
@@ -112,6 +117,7 @@ class V1TopicStubApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(config = AuthConfig.TEST)
             val requestJson = apiV1Mapper.encodeToString(requestObj)
             setBody(requestJson)
         }
@@ -134,6 +140,7 @@ class V1TopicStubApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(config = AuthConfig.TEST)
             val requestJson = apiV1Mapper.encodeToString(requestObj)
             setBody(requestJson)
         }

@@ -14,7 +14,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class BizValidationSearchTest {
 
     private val command = MssCommand.SEARCH

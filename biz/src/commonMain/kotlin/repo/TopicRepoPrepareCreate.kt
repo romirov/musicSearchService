@@ -11,6 +11,7 @@ fun ICorChainDsl<MssContext>.repoPrepareCreate(title: String) = worker {
     on { state == MssState.RUNNING }
     handle {
         topicRepoRead = topicValidated.deepCopy()
+        topicRepoRead.ownerId = principal.id
         topicRepoPrepare = topicRepoRead
 
     }

@@ -3,6 +3,7 @@ package ru.mss.biz.repo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import ru.mss.biz.MssTopicProcessor
+import ru.mss.biz.addTestPrincipal
 import ru.mss.common.MssContext
 import ru.mss.common.MssCorSettings
 import ru.mss.common.models.*
@@ -37,7 +38,6 @@ private val settings by lazy {
 }
 private val processor by lazy { MssTopicProcessor(settings) }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 fun repoNotFoundTest(command: MssCommand) = runTest {
     val ctx = MssContext(
         command = command,
@@ -51,6 +51,7 @@ fun repoNotFoundTest(command: MssCommand) = runTest {
             lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
+    ctx.addTestPrincipal()
     processor.exec(ctx)
     assertEquals(MssState.FAILING, ctx.state)
     assertEquals(MssTopic(), ctx.topicResponse)

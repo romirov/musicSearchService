@@ -3,6 +3,7 @@ package ru.mss.biz.validation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import ru.mss.biz.MssTopicProcessor
+import ru.mss.biz.addTestPrincipal
 import ru.mss.common.MssContext
 import ru.mss.common.models.*
 import ru.mss.stubs.MssTopicStub
@@ -12,7 +13,6 @@ import kotlin.test.assertNotEquals
 
 private val stub = MssTopicStub.get()
 
-@OptIn(ExperimentalCoroutinesApi::class)
 fun validationTitleCorrect(command: MssCommand, processor: MssTopicProcessor) = runTest {
     val ctx = MssContext(
         command = command,
@@ -26,13 +26,13 @@ fun validationTitleCorrect(command: MssCommand, processor: MssTopicProcessor) = 
             lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
+    ctx.addTestPrincipal(stub.ownerId)
     processor.exec(ctx)
     assertEquals(0, ctx.errors.size)
     assertNotEquals(MssState.FAILING, ctx.state)
     assertEquals("abc", ctx.topicValidated.title)
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 fun validationTitleTrim(command: MssCommand, processor: MssTopicProcessor) = runTest {
     val ctx = MssContext(
         command = command,
@@ -46,13 +46,13 @@ fun validationTitleTrim(command: MssCommand, processor: MssTopicProcessor) = run
             lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
+    ctx.addTestPrincipal(stub.ownerId)
     processor.exec(ctx)
     assertEquals(0, ctx.errors.size)
     assertNotEquals(MssState.FAILING, ctx.state)
     assertEquals("abc", ctx.topicValidated.title)
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 fun validationTitleEmpty(command: MssCommand, processor: MssTopicProcessor) = runTest {
     val ctx = MssContext(
         command = command,
@@ -66,6 +66,7 @@ fun validationTitleEmpty(command: MssCommand, processor: MssTopicProcessor) = ru
             lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
+    ctx.addTestPrincipal(stub.ownerId)
     processor.exec(ctx)
     assertEquals(1, ctx.errors.size)
     assertEquals(MssState.FAILING, ctx.state)
@@ -74,7 +75,6 @@ fun validationTitleEmpty(command: MssCommand, processor: MssTopicProcessor) = ru
     assertContains(error?.message ?: "", "title")
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 fun validationTitleSymbols(command: MssCommand, processor: MssTopicProcessor) = runTest {
     val ctx = MssContext(
         command = command,
@@ -88,6 +88,7 @@ fun validationTitleSymbols(command: MssCommand, processor: MssTopicProcessor) = 
             lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
+    ctx.addTestPrincipal(stub.ownerId)
     processor.exec(ctx)
     assertEquals(1, ctx.errors.size)
     assertEquals(MssState.FAILING, ctx.state)

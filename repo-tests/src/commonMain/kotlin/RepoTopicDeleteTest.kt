@@ -15,18 +15,23 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class RepoTopicDeleteTest {
     abstract val repo: ITopicRepository
+    protected open val deleteSucc = initObjects[0]
+    protected open val deleteConc = initObjects[1]
+    protected open val notFoundId = MssTopicId("topic-repo-delete-notFound")
 
     @Test
     fun deleteSuccess() = runRepoTest {
-        val result = repo.deleteTopic(DbTopicIdRequest(successId, lockOld))
+        val lockOld = deleteSucc.lock
+        val result = repo.deleteTopic(DbTopicIdRequest(deleteSucc.id, lock = lockOld))
 
         assertEquals(true, result.isSuccess)
         assertEquals(emptyList(), result.errors)
+        assertEquals(lockOld, result.data?.lock)
     }
 
     @Test
     fun deleteNotFound() = runRepoTest {
-        val result = repo.readTopic(DbTopicIdRequest(notFoundId))
+        val result = repo.readTopic(DbTopicIdRequest(notFoundId, lock = lockOld))
 
         assertEquals(false, result.isSuccess)
         assertEquals(null, result.data)
@@ -35,8 +40,9 @@ abstract class RepoTopicDeleteTest {
     }
 
     @Test
-    fun deleteConcurrency() = runTest {
-        val result = repo.deleteTopic(DbTopicIdRequest(concurrencyId, lock = lockBad))
+    fun deleteConcurrency() = runRepoTest {
+        val lockOld = deleteSucc.lock
+        val result = repo.deleteTopic(DbTopicIdRequest(deleteConc.id, lock = lockBad))
 
         assertEquals(false, result.isSuccess)
         val error = result.errors.find { it.code == "concurrency" }
@@ -49,8 +55,5 @@ abstract class RepoTopicDeleteTest {
             createInitTestModel("delete"),
             createInitTestModel("deleteLock"),
         )
-        val successId = MssTopicId(initObjects[0].id.asString())
-        val notFoundId = MssTopicId("topic-repo-delete-notFound")
-        val concurrencyId = MssTopicId(initObjects[1].id.asString())
     }
 }

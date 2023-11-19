@@ -3,6 +3,7 @@ package ru.mss.biz.repo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import ru.mss.biz.MssTopicProcessor
+import ru.mss.biz.addTestPrincipal
 import ru.mss.common.MssContext
 import ru.mss.common.MssCorSettings
 import ru.mss.common.models.*
@@ -11,7 +12,6 @@ import ru.mss.repo.tests.TopicRepositoryMock
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class BizRepoUpdateTest {
 
     private val userId = MssUserId("321")
@@ -64,6 +64,7 @@ class BizRepoUpdateTest {
             workMode = MssWorkMode.TEST,
             topicRequest = topicToUpdate,
         )
+        ctx.addTestPrincipal(userId)
         processor.exec(ctx)
         assertEquals(MssState.FINISHING, ctx.state)
         assertEquals(topicToUpdate.id, ctx.topicResponse.id)

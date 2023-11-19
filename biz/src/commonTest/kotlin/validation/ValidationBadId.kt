@@ -3,13 +3,16 @@ package ru.mss.biz.validation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import ru.mss.biz.MssTopicProcessor
+import ru.mss.biz.addTestPrincipal
 import ru.mss.common.MssContext
 import ru.mss.common.models.*
+import ru.mss.stubs.MssTopicStub
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
+private val stub = MssTopicStub.prepareResult { id = MssTopicId("123-234-abc-ABC") }
+
 fun validationIdCorrect(command: MssCommand, processor: MssTopicProcessor) = runTest {
     val ctx = MssContext(
         command = command,
@@ -23,12 +26,12 @@ fun validationIdCorrect(command: MssCommand, processor: MssTopicProcessor) = run
             lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
+    ctx.addTestPrincipal(stub.ownerId)
     processor.exec(ctx)
     assertEquals(0, ctx.errors.size)
     assertNotEquals(MssState.FAILING, ctx.state)
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 fun validationIdTrim(command: MssCommand, processor: MssTopicProcessor) = runTest {
     val ctx = MssContext(
         command = command,
@@ -42,12 +45,12 @@ fun validationIdTrim(command: MssCommand, processor: MssTopicProcessor) = runTes
             lock = MssTopicLock("123-234-abc-ABC"),
         ),
     )
+    ctx.addTestPrincipal(stub.ownerId)
     processor.exec(ctx)
     assertEquals(0, ctx.errors.size)
     assertNotEquals(MssState.FAILING, ctx.state)
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 fun validationIdEmpty(command: MssCommand, processor: MssTopicProcessor) = runTest {
     val ctx = MssContext(
         command = command,
@@ -69,7 +72,6 @@ fun validationIdEmpty(command: MssCommand, processor: MssTopicProcessor) = runTe
     assertContains(error?.message ?: "", "id")
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 fun validationIdFormat(command: MssCommand, processor: MssTopicProcessor) = runTest {
     val ctx = MssContext(
         command = command,

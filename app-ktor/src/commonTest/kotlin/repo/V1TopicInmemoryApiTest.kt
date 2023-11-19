@@ -9,7 +9,9 @@ import io.ktor.server.testing.*
 import org.junit.Test
 import ru.mss.api.v1.apiV1Mapper
 import ru.mss.api.v1.models.*
+import ru.mss.app.common.AuthConfig
 import ru.mss.app.ktor.MssAppSettings
+import ru.mss.app.ktor.auth.addAuth
 import ru.mss.app.ktor.module
 import ru.mss.common.MssCorSettings
 import ru.mss.common.models.MssTopicId
@@ -23,7 +25,7 @@ import kotlin.test.assertNotEquals
 class V1TopicInmemoryApiTest {
     private val uuidOld = "10000000-0000-0000-0000-000000000001"
     private val uuidNew = "10000000-0000-0000-0000-000000000002"
-    private val initAd = MssTopicStub.prepareResult {
+    private val initTopic = MssTopicStub.prepareResult {
         id = MssTopicId(uuidOld)
         title = "abc"
         description = "abc"
@@ -31,9 +33,11 @@ class V1TopicInmemoryApiTest {
         lock = MssTopicLock(uuidOld)
     }
 
+    private val userId = initTopic.ownerId
+
     @Test
     fun create() = testApplication {
-        val repo = TopicRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val repo = TopicRepoInMemory(initObjects = listOf(initTopic), randomUuid = { uuidNew })
         application {
             module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
@@ -54,6 +58,7 @@ class V1TopicInmemoryApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicCreateResponse>()
@@ -66,7 +71,7 @@ class V1TopicInmemoryApiTest {
 
     @Test
     fun read() = testApplication {
-        val repo = TopicRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val repo = TopicRepoInMemory(initObjects = listOf(initTopic), randomUuid = { uuidNew })
         application {
             module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
@@ -81,6 +86,7 @@ class V1TopicInmemoryApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicReadResponse>()
@@ -90,7 +96,7 @@ class V1TopicInmemoryApiTest {
 
     @Test
     fun update() = testApplication {
-        val repo = TopicRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val repo = TopicRepoInMemory(initObjects = listOf(initTopic), randomUuid = { uuidNew })
         application {
             module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
@@ -102,7 +108,7 @@ class V1TopicInmemoryApiTest {
             description = "Неизвестна композиция неизвестного автора",
             status = TopicStatus.OPENED,
             answer = Answer(answerBody = "неизвестнный автор"),
-            lock = initAd.lock.asString(),
+            lock = initTopic.lock.asString(),
         )
 
         val response = client.post("/v1/topic/update") {
@@ -114,6 +120,7 @@ class V1TopicInmemoryApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicUpdateResponse>()
@@ -126,7 +133,7 @@ class V1TopicInmemoryApiTest {
 
     @Test
     fun delete() = testApplication {
-        val repo = TopicRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val repo = TopicRepoInMemory(initObjects = listOf(initTopic), randomUuid = { uuidNew })
         application {
             module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
@@ -137,13 +144,14 @@ class V1TopicInmemoryApiTest {
                 requestId = "12345",
                 topic = TopicDeleteObject(
                     id = uuidOld,
-                    lock = initAd.lock.asString(),
+                    lock = initTopic.lock.asString(),
                 ),
                 debug = TopicDebug(
                     mode = TopicRequestDebugMode.TEST,
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicDeleteResponse>()
@@ -153,7 +161,7 @@ class V1TopicInmemoryApiTest {
 
     @Test
     fun search() = testApplication {
-        val repo = TopicRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val repo = TopicRepoInMemory(initObjects = listOf(initTopic), randomUuid = { uuidNew })
         application {
             module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
@@ -168,6 +176,7 @@ class V1TopicInmemoryApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicSearchResponse>()

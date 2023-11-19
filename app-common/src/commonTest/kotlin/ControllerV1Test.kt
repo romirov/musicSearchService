@@ -4,6 +4,7 @@ import kotlinx.coroutines.test.runTest
 import ru.mss.api.v1.models.*
 import ru.mss.biz.MssTopicProcessor
 import ru.mss.common.MssCorSettings
+import ru.mss.lib.logging.common.MssLoggerProvider
 import ru.mss.mappers.v1.fromTransport
 import ru.mss.mappers.v1.toTransportTopic
 import kotlin.test.Test
@@ -24,6 +25,8 @@ class ControllerV1Test {
 
     private val appSettings: IMssAppSettings = object : IMssAppSettings {
         override val corSettings: MssCorSettings = MssCorSettings()
+        override val logger: MssLoggerProvider =MssLoggerProvider()
+        override val auth: AuthConfig = AuthConfig.NONE
         override val processor: MssTopicProcessor = MssTopicProcessor(corSettings)
     }
 

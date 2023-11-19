@@ -33,6 +33,7 @@ abstract class RepoTopicCreateTest {
         assertEquals(expected.status, result.data?.status)
         assertNotEquals(MssTopicId.NONE, result.data?.id)
         assertEquals(emptyList(), result.errors)
+        assertEquals(lockNew, result.data?.lock)
     }
 
     companion object : BaseInitTopics("create") {

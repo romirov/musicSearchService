@@ -2,6 +2,8 @@ package ru.mss.common
 
 import kotlinx.datetime.Instant
 import ru.mss.common.models.*
+import ru.mss.common.permissions.MssPrincipalModel
+import ru.mss.common.permissions.MssUserPermissions
 import ru.mss.common.repo.ITopicRepository
 import ru.mss.common.stubs.MssStubs
 
@@ -19,6 +21,10 @@ data class MssContext(
     var topicRepoPrepare: MssTopic = MssTopic(), // То, что готовим для сохранения в БД
     var topicRepoDone: MssTopic = MssTopic(),  // Результат, полученный из БД
     var topicsRepoDone: MutableList<MssTopic> = mutableListOf(),
+
+    var principal: MssPrincipalModel = MssPrincipalModel.NONE,
+    val permissionsChain: MutableSet<MssUserPermissions> = mutableSetOf(),
+    var permitted: Boolean = false,
 
     var requestId: MssRequestId = MssRequestId.NONE,
     var timeStart: Instant = Instant.NONE,

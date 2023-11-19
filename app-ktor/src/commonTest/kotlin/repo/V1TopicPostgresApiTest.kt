@@ -11,7 +11,9 @@ import org.junit.BeforeClass
 import org.junit.Test
 import ru.mss.api.v1.apiV1Mapper
 import ru.mss.api.v1.models.*
+import ru.mss.app.common.AuthConfig
 import ru.mss.app.ktor.MssAppSettings
+import ru.mss.app.ktor.auth.addAuth
 import ru.mss.app.ktor.module
 import ru.mss.app.ktor.repo.SqlTestCompanion.repoUnderTestContainer
 import ru.mss.common.MssCorSettings
@@ -33,6 +35,8 @@ class V1TopicPostgresApiTest {
         status = MssTopicStatus.OPENED
         lock = MssTopicLock(uuidOld)
     }
+
+    private val userId = initTopic.ownerId
 
     companion object {
         @BeforeClass
@@ -72,6 +76,7 @@ class V1TopicPostgresApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicCreateResponse>()
@@ -100,6 +105,7 @@ class V1TopicPostgresApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicReadResponse>()
@@ -138,6 +144,7 @@ class V1TopicPostgresApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicUpdateResponse>()
@@ -169,6 +176,7 @@ class V1TopicPostgresApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicDeleteResponse>()
@@ -194,6 +202,7 @@ class V1TopicPostgresApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicSearchResponse>()

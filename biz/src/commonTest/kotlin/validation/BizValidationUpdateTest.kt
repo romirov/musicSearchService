@@ -7,7 +7,6 @@ import ru.mss.common.models.MssCommand
 import ru.mss.repo.stubs.TopicRepoStub
 import kotlin.test.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class BizValidationUpdateTest {
 
     private val command = MssCommand.UPDATE

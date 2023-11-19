@@ -8,7 +8,9 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
 import ru.mss.api.v1.apiV1Mapper
 import ru.mss.api.v1.models.*
+import ru.mss.app.common.AuthConfig
 import ru.mss.app.ktor.MssAppSettings
+import ru.mss.app.ktor.auth.addAuth
 import ru.mss.app.ktor.module
 import ru.mss.common.MssCorSettings
 import ru.mss.common.models.MssTopicId
@@ -32,6 +34,8 @@ class V1TopicInmemoryApiTest{
         lock = MssTopicLock(uuidOld)
     }
 
+    private val userId = initTopic.ownerId
+
     @Test
     fun create() = testApplication {
         val repo = TopicRepoInMemory(randomUuid = { uuidNew })
@@ -54,6 +58,7 @@ class V1TopicInmemoryApiTest{
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicCreateResponse>()
@@ -80,6 +85,7 @@ class V1TopicInmemoryApiTest{
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicReadResponse>()
@@ -111,6 +117,7 @@ class V1TopicInmemoryApiTest{
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicUpdateResponse>()
@@ -140,6 +147,7 @@ class V1TopicInmemoryApiTest{
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicDeleteResponse>()
@@ -163,6 +171,7 @@ class V1TopicInmemoryApiTest{
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(id = userId.asString(), config = AuthConfig.TEST)
             setBody(requestObj)
         }
         val responseObj = response.body<TopicSearchResponse>()

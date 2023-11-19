@@ -4,9 +4,6 @@ plugins {
 
 kotlin {
     jvm {}
-//    macosX64 {}
-//    macosArm64 {}
-//    linuxX64 {}
 
     sourceSets {
         val coroutinesVersion: String by project
@@ -18,6 +15,8 @@ kotlin {
                 implementation(kotlin("stdlib-common"))
 
                 implementation(project(":common"))
+                implementation(project(":auth"))
+                implementation(project(":repo-in-memory"))
                 implementation(project(":stubs"))
                 implementation(project(":lib-cor"))
             }

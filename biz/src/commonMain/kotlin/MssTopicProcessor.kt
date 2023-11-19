@@ -4,6 +4,10 @@ import ru.mss.biz.general.initRepo
 import ru.mss.biz.general.prepareResult
 import ru.mss.biz.groups.operation
 import ru.mss.biz.groups.stubs
+import ru.mss.biz.permissions.accessValidation
+import ru.mss.biz.permissions.chainPermissions
+import ru.mss.biz.permissions.frontPermissions
+import ru.mss.biz.permissions.searchTypes
 import ru.mss.biz.repo.*
 import ru.mss.biz.validation.*
 import ru.mss.biz.workers.*
@@ -17,17 +21,13 @@ import ru.mss.lib.chain
 import ru.mss.lib.rootChain
 import ru.mss.lib.worker
 
-class MssTopicProcessor(
-    @Suppress("unused")
-    private val corSettings: MssCorSettings = MssCorSettings.NONE
-) {
-    suspend fun exec(ctx: MssContext) = BusinessChain.exec(ctx.apply { settings = corSettings })
+class MssTopicProcessor(val settings: MssCorSettings = MssCorSettings()) {
+    suspend fun exec(ctx: MssContext) = BusinessChain.exec(ctx.apply { this.settings = this@MssTopicProcessor.settings })
 
     companion object {
         private val BusinessChain = rootChain<MssContext> {
             initStatus("Инициализация статуса")
             initRepo("Инициализация репозитория")
-
             operation("Создание объявления", MssCommand.CREATE) {
                 stubs("Обработка стабов") {
                     stubCreateSuccess("Имитация успешной обработки")
@@ -48,11 +48,14 @@ class MssTopicProcessor(
 
                     finishTopicValidation("Завершение проверок")
                 }
+                chainPermissions("Вычисление разрешений для пользователя")
                 chain {
                     title = "Логика сохранения"
                     repoPrepareCreate("Подготовка объекта для сохранения")
+                    accessValidation("Вычисление прав доступа")
                     repoCreate("Создание топика в БД")
                 }
+                frontPermissions("Вычисление пользовательских разрешений для фронтенда")
                 prepareResult("Подготовка ответа")
             }
             operation("Получить объявление", MssCommand.READ) {
@@ -70,15 +73,18 @@ class MssTopicProcessor(
 
                     finishTopicValidation("Успешное завершение процедуры валидации")
                 }
+                chainPermissions("Вычисление разрешений для пользователя")
                 chain {
                     title = "Логика чтения"
                     repoRead("Чтение топика из БД")
+                    accessValidation("Вычисление прав доступа")
                     worker {
                         title = "Подготовка ответа для Read"
                         on { state == MssState.RUNNING }
                         handle { topicRepoDone = topicRepoRead }
                     }
                 }
+                frontPermissions("Вычисление пользовательских разрешений для фронтенда")
                 prepareResult("Подготовка ответа")
             }
             operation("Изменить объявление", MssCommand.UPDATE) {
@@ -107,12 +113,15 @@ class MssTopicProcessor(
 
                     finishTopicValidation("Успешное завершение процедуры валидации")
                 }
+                chainPermissions("Вычисление разрешений для пользователя")
                 chain {
                     title = "Логика сохранения"
                     repoRead("Чтение топика из БД")
+                    accessValidation("Вычисление прав доступа")
                     repoPrepareUpdate("Подготовка объекта для обновления")
                     repoUpdate("Обновление топика в БД")
                 }
+                frontPermissions("Вычисление пользовательских разрешений для фронтенда")
                 prepareResult("Подготовка ответа")
             }
             operation("Удалить объявление", MssCommand.DELETE) {
@@ -134,12 +143,15 @@ class MssTopicProcessor(
                     validateLockProperFormat("Проверка формата lock")
                     finishTopicValidation("Успешное завершение процедуры валидации")
                 }
+                chainPermissions("Вычисление разрешений для пользователя")
                 chain {
                     title = "Логика удаления"
                     repoRead("Чтение топика из БД")
+                    accessValidation("Вычисление прав доступа")
                     repoPrepareDelete("Подготовка объекта для удаления")
                     repoDelete("Удаление топика из БД")
                 }
+                frontPermissions("Вычисление пользовательских разрешений для фронтенда")
                 prepareResult("Подготовка ответа")
             }
             operation("Поиск объявлений", MssCommand.SEARCH) {
@@ -154,7 +166,11 @@ class MssTopicProcessor(
 
                     finishTopicFilterValidation("Успешное завершение процедуры валидации")
                 }
+                chainPermissions("Вычисление разрешений для пользователя")
+                searchTypes("Подготовка поискового запроса")
+
                 repoSearch("Поиск топика в БД по фильтру")
+                frontPermissions("Вычисление пользовательских разрешений для фронтенда")
                 prepareResult("Подготовка ответа")
             }
         }.build()

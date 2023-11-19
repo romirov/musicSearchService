@@ -12,8 +12,7 @@ Content-Type: application/json
     "status": "opened"
   },
   "debug": {
-    "mode": "stub",
-    "stub": "success"
+    "mode": "test"
   }
 }
 
@@ -30,6 +29,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2Vyc
     "id": "99999"
   },
   "debug": {
+    "mode": "stub",
     "stub": "badId"
   }
 }
