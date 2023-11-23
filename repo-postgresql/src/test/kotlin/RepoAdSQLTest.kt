@@ -9,7 +9,7 @@ import ru.otus.otuskotlin.marketplace.backend.repo.tests.RepoTopicReadTest
 import kotlin.random.Random
 
 val random = Random(System.currentTimeMillis())
-class RepoAdSQLCreateTest : RepoTopicCreateTest() {
+class RepoTopicSQLCreateTest : RepoTopicCreateTest() {
     override val repo: ITopicRepository = SqlTestCompanion.repoUnderTestContainer(
         "create-" + random.nextInt(),
         initObjects,
@@ -17,21 +17,21 @@ class RepoAdSQLCreateTest : RepoTopicCreateTest() {
     )
 }
 
-class RepoAdSQLDeleteTest : RepoTopicDeleteTest() {
+class RepoTopicSQLDeleteTest : RepoTopicDeleteTest() {
     override val repo: ITopicRepository = SqlTestCompanion.repoUnderTestContainer(
         "delete_" + random.nextInt(),
         initObjects
     )
 }
 
-class RepoAdSQLReadTest : RepoTopicReadTest() {
+class RepoTopicSQLReadTest : RepoTopicReadTest() {
     override val repo: ITopicRepository = SqlTestCompanion.repoUnderTestContainer(
         "read" + random.nextInt(),
         initObjects
     )
 }
 
-class RepoAdSQLSearchTest : RepoTopicSearchTest() {
+class RepoTopicSQLSearchTest : RepoTopicSearchTest() {
     override val repo: ITopicRepository = SqlTestCompanion.repoUnderTestContainer(
         "search" + random.nextInt(),
         initObjects

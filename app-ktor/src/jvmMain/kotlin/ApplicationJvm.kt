@@ -32,30 +32,7 @@ fun Application.moduleJvm(appSettings: MssAppSettings = initAppSettings()) {
         lgr?.logger?.also { logger = it }
     }
 
-    install(Authentication) {
-        jwt("auth-jwt") {
-            val authConfig = appSettings.auth
-            realm = authConfig.realm
 
-            verifier {
-                val algorithm = it.resolveAlgorithm(authConfig)
-                JWT.require(algorithm)
-                    .withAudience(authConfig.audience)
-                    .withIssuer(authConfig.issuer)
-                    .build()
-            }
-            validate { jwtCredential: JWTCredential ->
-                when {
-                    jwtCredential.payload.getClaim(GROUPS_CLAIM).asList(String::class.java).isNullOrEmpty() -> {
-                        this@moduleJvm.log.error("Groups claim must not be empty in JWT token")
-                        null
-                    }
-
-                    else -> JWTPrincipal(jwtCredential.payload)
-                }
-            }
-        }
-    }
 
     routing {
         swagger(appSettings)

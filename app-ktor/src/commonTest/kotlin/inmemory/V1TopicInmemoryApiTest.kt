@@ -38,17 +38,17 @@ class V1TopicInmemoryApiTest{
 
     @Test
     fun create() = testApplication {
-        val repo = TopicRepoInMemory(randomUuid = { uuidNew })
+        val repo = TopicRepoInMemory(initObjects = listOf(initTopic), randomUuid = { uuidNew })
         application {
             module(MssAppSettings(corSettings = MssCorSettings(repoTest = repo)))
         }
-
+        val client = myClient()
         val createTopic = TopicCreateObject(
             title = "Неизвестная композиция",
             description = "Неизвестна композиция неизвестного автора",
             status = TopicStatus.OPENED
         )
-        val client = myClient()
+
         val response = client.post("/v1/topic/create") {
             val requestObj = TopicCreateRequest(
                 requestId = "1234",

@@ -20,8 +20,16 @@ musicsearchservice:
   repository:
     test: "$DB_TYPE_TEST:inmemory"
     prod: "$DB_TYPE_PROD:inmemory"
+    # prod: psql
     psql:
       password: musicsearchservice-pass
       schema: musicsearchservice
       url: "jdbc:postgresql://localhost:5432/musicsearchservice"
       user: postgres
+
+jwt:
+  issuer: "http://localhost:8081/auth/realms/otus-musicsearchservice"
+  audience: "topic-users"
+  realm: "otus-musicsearchservice"
+  clientId: "otus-musicsearchservice"
+  certUrl: "http://localhost:8081/auth/realms/otus-musicsearchservice/protocol/openid-connect/certs"

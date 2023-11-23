@@ -1,7 +1,6 @@
 package ru.mss.common.permissions
 
 import ru.mss.common.models.MssUserId
-import ru.otus.otuskotlin.marketplace.common.permissions.MssUserGroups
 
 data class MssPrincipalModel(
     val id: MssUserId = MssUserId.NONE,

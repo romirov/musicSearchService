@@ -3,6 +3,7 @@ package ru.mss.biz.repo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import ru.mss.biz.MssTopicProcessor
+import ru.mss.biz.addTestPrincipal
 import ru.mss.common.MssContext
 import ru.mss.common.MssCorSettings
 import ru.mss.common.models.*
@@ -47,6 +48,7 @@ class BizRepoReadTest {
                 id = MssTopicId("123"),
             ),
         )
+        ctx.addTestPrincipal()
         processor.exec(ctx)
         assertEquals(MssState.FINISHING, ctx.state)
         assertEquals(initTopic.id, ctx.topicResponse.id)
@@ -55,7 +57,6 @@ class BizRepoReadTest {
         assertEquals(initTopic.status, ctx.topicResponse.status)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun repoReadNotFoundTest() = repoNotFoundTest(command)
 }

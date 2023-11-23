@@ -9,3 +9,5 @@
 /.idea/
 
 **/yarn.lock
+
+/deploy/keycloak/hsperfdata_jboss

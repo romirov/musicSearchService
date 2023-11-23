@@ -16,17 +16,23 @@ ktor:
     - resources
 musicsearchservice:
   repository:
-    test: inmemory
-    prod: inmemory
+    test: "$DB_TYPE_TEST:inmemory"
+    prod: "$DB_TYPE_PROD:inmemory"
     # prod: psql
     psql:
       password: musicsearchservice-pass
       schema: musicsearchservice
       url: jdbc:postgresql://localhost:5432/musicsearchservice
       user: postgres
-    jwt:
-      secret: "secret"
-      issuer: "OtusKotlin"
-      audience: "topic-users"
-      realm: "mss-topics"
-      clientId: "otus-musicsearchservice"
+#    jwt:
+#      secret: "secret"
+#      issuer: "OtusKotlin"
+#      audience: "topic-users"
+#      realm: "mss-topics"
+#      clientId: "otus-musicsearchservice"
+jwt:
+  issuer: "http://localhost:8081/auth/realms/otus-musicsearchservice"
+  audience: "topic-users"
+  realm: "otus-musicsearchservice"
+  clientId: "otus-musicsearchservice"
+  certUrl: "http://localhost:8081/auth/realms/otus-musicsearchservice/protocol/openid-connect/certs"

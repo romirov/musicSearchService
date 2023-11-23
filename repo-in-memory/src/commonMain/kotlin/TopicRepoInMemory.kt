@@ -38,7 +38,7 @@ class TopicRepoInMemory(
 
     override suspend fun createTopic(rq: DbTopicRequest): DbTopicResponse {
         val key = randomUuid()
-        val topic = rq.topic.copy(id = MssTopicId(key))
+        val topic = rq.topic.copy(id = MssTopicId(key), lock = MssTopicLock(randomUuid()))
         val entity = TopicEntity(topic)
         cache.put(key, entity)
         return DbTopicResponse(
@@ -59,49 +59,45 @@ class TopicRepoInMemory(
     }
 
     private suspend fun doUpdate(
-        key: String,
-        oldLock: String,
-        okBlock: (oldTopic: TopicEntity) -> DbTopicResponse
-    ): DbTopicResponse = mutex.withLock {
-        val oldTopic = cache.get(key)
-        when {
-            oldTopic == null -> resultErrorNotFound
-            oldTopic.lock != oldLock -> DbTopicResponse(
-                data = oldTopic.toInternal(),
-                isSuccess = false,
-                errors = listOf(errorRepoConcurrency(MssTopicLock(oldLock), oldTopic.lock?.let { MssTopicLock(it) }))
-            )
+        id: MssTopicId,
+        oldLock: MssTopicLock,
+        okBlock: (key: String, oldAd: TopicEntity) -> DbTopicResponse
+    ): DbTopicResponse {
+        val key = id.takeIf { it != MssTopicId.NONE }?.asString() ?: return resultErrorEmptyId
+        val oldLockStr = oldLock.takeIf { it != MssTopicLock.NONE }?.asString()
+            ?: return resultErrorEmptyLock
+        return mutex.withLock {
+            val oldTopic = cache.get(key)
+            when {
+                oldTopic == null -> resultErrorNotFound
+                oldTopic.lock != oldLockStr -> DbTopicResponse.errorConcurrent(
+                    oldLock,
+                    oldTopic.toInternal()
+                )
 
-            else -> okBlock(oldTopic)
+                else -> okBlock(key, oldTopic)
+            }
         }
     }
 
-    override suspend fun updateTopic(rq: DbTopicRequest): DbTopicResponse {
-        val key = rq.topic.id.takeIf { it != MssTopicId.NONE }?.asString() ?: return resultErrorEmptyId
-        val oldLock = rq.topic.lock.takeIf { it != MssTopicLock.NONE }?.asString() ?: return resultErrorEmptyLock
-        val newTopic = rq.topic.copy()
-        val entity = TopicEntity(newTopic)
-        return doUpdate(key, oldLock) {
+    override suspend fun updateTopic(rq: DbTopicRequest): DbTopicResponse =
+        doUpdate(rq.topic.id, rq.topic.lock) { key, _ ->
+            val newTopic = rq.topic.copy(lock = MssTopicLock(randomUuid()))
+            val entity = TopicEntity(newTopic)
             cache.put(key, entity)
-            DbTopicResponse(
-                data = newTopic,
-                isSuccess = true,
-            )
+            DbTopicResponse.success(newTopic)
         }
-    }
 
-    override suspend fun deleteTopic(rq: DbTopicIdRequest): DbTopicResponse {
-        val key = rq.id.takeIf { it != MssTopicId.NONE }?.asString() ?: return resultErrorEmptyId
-        val oldLock = rq.lock.takeIf { it != MssTopicLock.NONE }?.asString() ?: return resultErrorEmptyLock
-        return doUpdate(key, oldLock) { oldTopic ->
+    override suspend fun deleteTopic(rq: DbTopicIdRequest): DbTopicResponse =
+        doUpdate(rq.id, rq.lock) { key, oldTopic ->
             cache.invalidate(key)
-            DbTopicResponse(
-                data = oldTopic.toInternal(),
-                isSuccess = true,
-            )
+            DbTopicResponse.success(oldTopic.toInternal())
         }
-    }
 
+    /**
+     * Поиск объявлений по фильтру
+     * Если в фильтре не установлен какой-либо из параметров - по нему фильтрация не идет
+     */
     override suspend fun searchTopic(rq: DbTopicFilterRequest): DbTopicsResponse {
         val result = cache.asMap().asSequence()
             .filter { entry ->

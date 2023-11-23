@@ -3,6 +3,7 @@ package ru.mss.biz.permissions
 import ru.mss.common.MssContext
 import ru.mss.common.models.MssSearchPermissions
 import ru.mss.common.models.MssState
+import ru.mss.common.permissions.MssUserPermissions
 import ru.mss.lib.ICorChainDsl
 import ru.mss.lib.chain
 import ru.mss.lib.worker
