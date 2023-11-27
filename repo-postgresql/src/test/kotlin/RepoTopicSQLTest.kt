@@ -38,7 +38,7 @@ class RepoTopicSQLSearchTest : RepoTopicSearchTest() {
     )
 }
 
-class RepoAdSQLUpdateTest : RepoTopicUpdateTest() {
+class RepoTopicSQLUpdateTest : RepoTopicUpdateTest() {
     override val repo: ITopicRepository = SqlTestCompanion.repoUnderTestContainer(
         "update" + random.nextInt(),
         initObjects,

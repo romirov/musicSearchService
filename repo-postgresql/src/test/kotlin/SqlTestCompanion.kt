@@ -37,7 +37,8 @@ object SqlTestCompanion {
                 user = USER,
                 password = PASS,
                 schema = SCHEMA,
-//                table = "topic-$test",
+                tableTopic = "topic-$test",
+                tableAnswer = "answer-$test",
             ),
             initObjects,
             randomUuid = randomUuid
