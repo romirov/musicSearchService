@@ -18,7 +18,7 @@ actual fun Application.getDatabaseConf(type: TopicDbType): ITopicRepository {
         "postgres", "postgresql", "pg", "sql", "psql" -> initPostgres()
         else -> throw IllegalArgumentException(
             "$dbSettingPath must be set in application.yml to one of: " +
-                    "'inmemory', 'postgres', 'cassandra', 'gremlin'"
+                    "'inmemory', 'postgres'"
         )
     }
 }
