@@ -113,7 +113,7 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
-                implementation(kotlin("stdlib"))
+                implementation(kotlin("stdlib-jdk8"))
                 implementation(ktor("core")) // "io.ktor:ktor-server-core:$ktorVersion"
                 implementation(ktor("netty")) // "io.ktor:ktor-ktor-server-netty:$ktorVersion"
 

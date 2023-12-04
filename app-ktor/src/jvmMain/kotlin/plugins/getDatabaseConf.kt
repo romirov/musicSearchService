@@ -17,7 +17,7 @@ actual fun Application.getDatabaseConf(type: TopicDbType): ITopicRepository {
         "in-memory", "inmemory", "memory", "mem" -> initInMemory()
         "postgres", "postgresql", "pg", "sql", "psql" -> initPostgres()
         else -> throw IllegalArgumentException(
-            "$dbSettingPath must be set in application.yml to one of: " +
+            "$dbSettingPath must be set in application.yaml to one of: " +
                     "'inmemory', 'postgres'"
         )
     }
