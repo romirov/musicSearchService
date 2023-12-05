@@ -17,7 +17,7 @@ fun Application.initAppSettings(): MssAppSettings {
     return MssAppSettings(
         appUrls = environment.config.propertyOrNull("ktor.urls")?.getList() ?: emptyList(),
         corSettings = corSettings,
-        processor = MssTopicProcessor(),
+        processor = MssTopicProcessor(corSettings),
         logger = getLoggerProviderConf(),
         auth = initAppAuth(),
     )
