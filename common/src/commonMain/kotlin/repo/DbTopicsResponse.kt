@@ -3,7 +3,7 @@ package ru.mss.common.repo
 import ru.mss.common.models.MssError
 import ru.mss.common.models.MssTopic
 
-data class DbTopicsResponse(
+data class  DbTopicsResponse(
     override val data: List<MssTopic>?,
     override val isSuccess: Boolean,
     override val errors: List<MssError> = emptyList(),

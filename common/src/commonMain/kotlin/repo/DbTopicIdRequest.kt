@@ -8,5 +8,5 @@ data class DbTopicIdRequest(
     val id: MssTopicId,
     val lock: MssTopicLock = MssTopicLock.NONE,
 ) {
-    constructor(topic: MssTopic): this(topic.id)
+    constructor(topic: MssTopic): this(topic.id, topic.lock)
 }

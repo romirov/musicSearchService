@@ -106,11 +106,13 @@ class RepoTopicSQL(
 
     override suspend fun deleteTopic(rq: DbTopicIdRequest): DbTopicResponse = update(rq.id, rq.lock) {
         topicTable.deleteWhere { id eq rq.id.asString() }
+        answerTable.deleteWhere { topicId eq rq.id.asString() }
         DbTopicResponse.success(it)
     }
 
     suspend fun deleteAllTopics(): DbTopicResponse = transactionWrapper {
         topicTable.deleteAll()
+        answerTable.deleteAll()
         DbTopicResponse(data = null, isSuccess = true)
     }
 

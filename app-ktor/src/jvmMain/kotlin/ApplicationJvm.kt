@@ -32,8 +32,6 @@ fun Application.moduleJvm(appSettings: MssAppSettings = initAppSettings()) {
         lgr?.logger?.also { logger = it }
     }
 
-
-
     routing {
         swagger(appSettings)
         static("static") {
