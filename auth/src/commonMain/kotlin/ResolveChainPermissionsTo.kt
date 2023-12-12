@@ -18,7 +18,7 @@ private val groupPermissionsAdmits = mapOf(
         MssUserPermissions.READ_OWN,
         MssUserPermissions.READ_PUBLIC,
         MssUserPermissions.CREATE_OWN,
-        MssUserPermissions.UPDATE_OWN,
+        MssUserPermissions.UPDATE_PUBLIC,
         MssUserPermissions.DELETE_OWN,
     ),
     MssUserGroups.MODERATOR_MP to setOf(),

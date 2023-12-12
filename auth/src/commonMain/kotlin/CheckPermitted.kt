@@ -54,6 +54,13 @@ private val accessTable = mapOf(
         relation = MssPrincipalRelations.OWN,
     ) to true,
 
+    // Update
+    AccessTableConditions(
+        command = MssCommand.UPDATE,
+        permission = MssUserPermissions.UPDATE_PUBLIC,
+        relation = MssPrincipalRelations.NONE,
+    ) to true,
+
     // Delete
     AccessTableConditions(
         command = MssCommand.DELETE,
