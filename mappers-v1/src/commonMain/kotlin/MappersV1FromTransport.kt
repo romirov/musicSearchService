@@ -23,6 +23,7 @@ private fun TopicReadObject?.toInternal() = if (this != null) {
     MssTopic()
 }
 private fun String?.toAnswerId() = this?.let { MssTopicAnswerId(it) } ?: MssTopicAnswerId.NONE
+private fun String?.toUserId() = this?.let { MssUserId(it) } ?: MssUserId.NONE
 private fun IRequest?.requestId() = this?.requestId?.let { MssRequestId(it) } ?: MssRequestId.NONE
 
 private fun TopicDebug?.transportToWorkMode(): MssWorkMode = when (this?.mode) {
@@ -117,6 +118,7 @@ private fun Answer?.fromTransport(): MutableList<MssTopicAnswer> = when (this) {
     else -> mutableListOf(
         MssTopicAnswer(
             id = this.id.toAnswerId(),
+            userId = this.userId.toUserId(),
             answerBody = this.answerBody ?: ""
         )
     )

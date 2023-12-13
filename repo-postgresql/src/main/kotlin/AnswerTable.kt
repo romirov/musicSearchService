@@ -16,7 +16,7 @@ class AnswerTable(answerTableName: String = "answer", topicTableName: String) : 
     fun from(res: ResultRow) = MssTopicAnswer(
         id = MssTopicAnswerId(res[id].toString()),
         userId = MssUserId(res[user].toString()),
-        answerBody = body.toString()
+        answerBody = res[body].toString()
     )
 
     fun to(it: UpdateBuilder<*>, topicId: String,  answer: MssTopicAnswer, randomUuid: () -> String) {
