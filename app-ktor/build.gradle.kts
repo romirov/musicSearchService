@@ -33,7 +33,7 @@ application {
 
 ktor {
     docker {
-        localImageName.set(project.name + "-ktor")
+        localImageName.set(project.name)
         imageTag.set(project.version.toString())
         jreVersion.set(JavaVersion.VERSION_17)
     }
