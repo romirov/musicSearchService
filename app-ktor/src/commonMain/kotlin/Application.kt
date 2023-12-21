@@ -21,7 +21,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.cio.EngineMain.main(args)
 //запуск через gradle
 //создание образа через gradle - app-ktor - ktor - runDocker
 @Suppress("unused")
-fun Application.module(appSettings: MssAppSettings = initAppSettings()){
+fun Application.module(appSettings: MssAppSettings = initAppSettings()) {
     initPlugins(appSettings)
 
     install(Authentication) {
@@ -36,9 +36,11 @@ fun Application.module(appSettings: MssAppSettings = initAppSettings()){
                     .withIssuer(authConfig.issuer)
                     .build()
             }
+            println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
             validate { jwtCredential: JWTCredential ->
+                println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 when {
-                    jwtCredential.payload.getClaim(AuthConfig.GROUPS_CLAIM).asList(String::class.java).isNullOrEmpty() -> {
+                    jwtCredential.payload.getClaim(AuthConfig.GROUPS_CLAIM).asString().isEmpty() -> {
                         this@module.log.error("Groups claim must not be empty in JWT token")
                         null
                     }
@@ -46,6 +48,7 @@ fun Application.module(appSettings: MssAppSettings = initAppSettings()){
                     else -> JWTPrincipal(jwtCredential.payload)
                 }
             }
+            println("########################################")
         }
     }
 
