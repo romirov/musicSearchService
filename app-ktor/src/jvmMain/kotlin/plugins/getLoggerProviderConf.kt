@@ -4,9 +4,8 @@ import io.ktor.server.application.*
 import ru.mss.lib.logging.common.MssLoggerProvider
 import ru.mss.lib.logging.logback.mssLoggerLogback
 
-actual fun Application.getLoggerProviderConf(): MssLoggerProvider =
+fun Application.getLoggerProviderConf(): MssLoggerProvider =
     when (val mode = environment.config.propertyOrNull("ktor.logger")?.getString()) {
-//        "kmp" -> MssLoggerProvider { mssLoggerKermit(it) }
         "logback", null -> MssLoggerProvider { mssLoggerLogback(it) }
         else -> throw Exception("Logger $mode is not allowed. Additted values are kmp and logback")
-    }
+}

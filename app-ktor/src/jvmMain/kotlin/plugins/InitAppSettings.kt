@@ -13,7 +13,6 @@ fun Application.initAppSettings(): MssAppSettings {
         repoProd = getDatabaseConf(TopicDbType.PROD),
         repoStub = TopicRepoStub(),
     )
-
     return MssAppSettings(
         appUrls = environment.config.propertyOrNull("ktor.urls")?.getList() ?: emptyList(),
         corSettings = corSettings,

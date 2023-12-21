@@ -12,4 +12,4 @@ data class MssAppSettings(
     override val processor: MssTopicProcessor = MssTopicProcessor(corSettings),
     override val logger: MssLoggerProvider = MssLoggerProvider(),
     override val auth: AuthConfig = AuthConfig.TEST,
-): IMssAppSettings
+) : IMssAppSettings

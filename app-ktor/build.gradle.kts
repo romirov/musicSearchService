@@ -48,75 +48,12 @@ kotlin {
         withJava()
     }
 
-
-//    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-//        binaries {
-//            executable {
-//                entryPoint = "ru.mss.app.ktor.main"
-//            }
-//        }
-//    }
-
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(kotlin("stdlib-common"))
-                implementation(ktor("core")) // "io.ktor:ktor-server-core:$ktorVersion"
-                implementation(ktor("cio")) // "io.ktor:ktor-server-cio:$ktorVersion"
-                implementation(ktor("auth")) // "io.ktor:ktor-server-auth:$ktorVersion"
-                implementation(ktor("auto-head-response")) // "io.ktor:ktor-server-auto-head-response:$ktorVersion"
-                implementation(ktor("caching-headers")) // "io.ktor:ktor-server-caching-headers:$ktorVersion"
-                implementation(ktor("cors")) // "io.ktor:ktor-server-cors:$ktorVersion"
-                implementation(ktor("websockets")) // "io.ktor:ktor-server-websockets:$ktorVersion"
-                implementation(ktor("config-yaml")) // "io.ktor:ktor-server-config-yaml:$ktorVersion"
-                implementation(ktor("content-negotiation")) // "io.ktor:ktor-server-content-negotiation:$ktorVersion"
-                implementation(ktor("websockets")) // "io.ktor:ktor-websockets:$ktorVersion"
-                implementation(ktor("auth")) // "io.ktor:ktor-auth:$ktorVersion"
-
-                implementation(project(":app-common"))
-                implementation(project(":common"))
-                implementation(project(":biz"))
-
-                // v2 api
-                implementation(project(":api-v1-kmp"))
-                implementation(project(":mappers-v1"))
-
-                // Stubs
-                implementation(project(":stubs"))
-
-                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
-
-                // logging
-                implementation(project(":api-log"))
-                implementation(project(":mappers-log"))
-                implementation(project(":lib-logging-common"))
-
-                implementation(project(":repo-in-memory"))
-                implementation(project(":repo-stubs"))
-            }
-        }
-
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-
-                implementation(ktor("test-host"))
-                implementation(ktor("content-negotiation", prefix = "client-"))
-                implementation(ktor("websockets", prefix = "client-"))
-
-                implementation(project(":repo-tests"))
-            }
-        }
-
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
                 implementation(ktor("core")) // "io.ktor:ktor-server-core:$ktorVersion"
-                implementation(ktor("netty")) // "io.ktor:ktor-ktor-server-netty:$ktorVersion"
+                implementation(ktor("cio"))
 
                 // jackson
                 implementation(ktor("jackson", "serialization")) // io.ktor:ktor-serialization-jackson
@@ -137,11 +74,25 @@ kotlin {
                 implementation(ktor("auth-jwt")) // "io.ktor:ktor-auth-jwt:$ktorVersion"
 
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
-                implementation(project(":lib-logging-logback"))
                 implementation("com.sndyuk:logback-more-appenders:1.8.8")
                 implementation("org.fluentd:fluent-logger:0.3.4")
 
+                // transport models
+                implementation(project(":lib-logging-logback"))
+                implementation(project(":common"))
+                implementation(project(":app-common"))
+                implementation(project(":biz"))
+                implementation(project(":api-v1-kmp"))
+                implementation(project(":mappers-v1"))
+                implementation(project(":stubs"))
+                implementation(project(":api-log"))
+                implementation(project(":mappers-log"))
+                implementation(project(":lib-logging-common"))
+                implementation(project(":lib-logging-logback"))
+
                 implementation(project(":repo-postgresql"))
+                implementation(project(":repo-in-memory"))
+                implementation(project(":repo-stubs"))
             }
         }
 

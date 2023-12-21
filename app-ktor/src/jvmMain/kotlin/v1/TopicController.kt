@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 
 private val clCreate: KClass<*> = ApplicationCall::createTopic::class
 suspend fun ApplicationCall.createTopic(appSettings: MssAppSettings) =
-    processV1<TopicCreateRequest, TopicCreateResponse>(appSettings, clCreate, "createTopic")
+    processV1<TopicCreateRequest, TopicCreateResponse>(appSettings, clCreate, "create")
 
 private val clRead: KClass<*> = ApplicationCall::readTopic::class
 suspend fun ApplicationCall.readTopic(appSettings: MssAppSettings) =
