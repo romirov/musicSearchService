@@ -24,12 +24,12 @@ musicsearchservice:
     psql:
       password: musicsearchservice-pass
       schema: musicsearchservice
-      url: "jdbc:postgresql://localhost:5432/musicsearchservice"
+      url: "jdbc:postgresql://postgresql:5432/musicsearchservice"
       user: postgres
 
 jwt:
-  issuer: "http://localhost:8081/auth/realms/otus-musicsearchservice"
+  issuer: "http://keycloak:8080/auth/realms/otus-musicsearchservice"
   audience: "topic-users"
   realm: "otus-musicsearchservice"
   clientId: "otus-musicsearchservice"
-  certUrl: "http://localhost:8081/auth/realms/otus-musicsearchservice/protocol/openid-connect/certs"
+  certUrl: "http://keycloak:8080/auth/realms/otus-musicsearchservice/protocol/openid-connect/certs"

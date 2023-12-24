@@ -35,5 +35,6 @@ fun ApplicationCall.mssPrincipal(appSettings: MssAppSettings): MssPrincipalModel
     fname = "Ivan",
     mname = "Ivanovich",
     lname = "Ivanov",
-    groups = setOf(MssUserGroups.TEST, MssUserGroups.USER),
+//    groups = setOf(MssUserGroups.TEST, MssUserGroups.USER),
+    groups = setOf(MssUserGroups.USER),
 )

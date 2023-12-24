@@ -57,9 +57,9 @@ fun Application.module(appSettings: MssAppSettings = initAppSettings()){
             install(ContentNegotiation) {
                 json(apiV1Mapper)
             }
-            authenticate("auth-jwt") {
+//            authenticate("auth-jwt") {
                 v1Topic(appSettings)
-            }
+//            }
         }
     }
 }
